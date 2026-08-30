@@ -1,13 +1,28 @@
-<header class="site-header">
-    <div class="container">
-        <a href="{{ 'home'|page }}" class="logo"> Training CMS </a>
+<header>
+    <a href="{{ 'home'|page }}">Training CMS</a>
 
-        <nav>
-            <ul class="nav-links">
-                <li><a href="{{ 'home'|page }}">Home</a></li>
-                <li><a href="{{ 'about'|page }}">About</a></li>
-                <li><a href="{{ 'contact'|page }}">Contact</a></li>
-            </ul>
-        </nav>
-    </div>
+    <nav>
+        <ul>
+            <li>
+                <a href="{{ 'home'|page }}"
+                   class="{{ this.page.id == 'home' ? 'active' : '' }}">
+                    Home
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ 'about'|page }}"
+                   class="{{ this.page.id == 'about' ? 'active' : '' }}">
+                    About
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ 'contact'|page }}"
+                   class="{{ this.page.id == 'contact' ? 'active' : '' }}">
+                    Contact
+                </a>
+            </li>
+        </ul>
+    </nav>
 </header>
