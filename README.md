@@ -1,72 +1,171 @@
-<p align="center">
-    <img src="https://github.com/octobercms/october/blob/develop/themes/demo/assets/images/favicon.png?raw=true" alt="October" width="25%" height="25%" />
-</p>
+# October CMS Training Project
 
-[October](https://octobercms.com) is a Content Management System (CMS) and web platform whose sole purpose is to make your development workflow simple again. It was born out of frustration with existing systems. We feel building websites has become a convoluted and confusing process that leaves developers unsatisfied. We want to turn you around to the simpler side and get back to basics.
+## Project Overview
 
-October's mission is to show the world that web development is not rocket science.
+This project was created as part of the Blue Information Technology University Field Training Program.
 
-[![Build Status](https://github.com/octobercms/library/actions/workflows/tests.yml/badge.svg)](https://octobercms.com/)
-[![Downloads](https://img.shields.io/packagist/dt/october/rain)](https://docs.octobercms.com/)
-[![Version](https://img.shields.io/packagist/v/october/october)](https://octobercms.com/changelog)
-[![License](https://poser.pugx.org/october/october/license.svg)](./LICENSE.md)
+The purpose of the project is to practice the fundamentals of October CMS, including project setup, backend administration, custom themes, reusable layouts and partials, website pages, navigation, CMS-managed content, and responsive styling.
 
-> *Please note*: October CMS is open source and every new account includes a complimentary license for the first year. After that, a license is required to continue receiving updates and access the Marketplace ecosystem.
+## Requirements
 
-## Installing October
+To run the project locally, the following are required:
 
-Instructions on how to install October can be found at the [installation guide](https://docs.octobercms.com/3.x/setup/installation.html).
+- PHP
+- Composer
+- MySQL / MariaDB
+- October CMS
+- A local development environment such as XAMPP
+- Git
 
-### Quick Start Installation
+## Installation and Local Setup
 
-If you have composer installed, run this in your terminal to install October CMS from command line. This will place the files in a directory named **myoctober**.
+1. Clone the repository:
 
-    composer create-project october/october myoctober
+```bash
+git clone https://github.com/Shahd-Barmawi/task-20-october-cms.git
+```
 
-If you plan on using a database, run this command inside the application directory.
+2. Enter the project directory:
 
-    php artisan october:install
+```bash
+cd task-20-october-cms
+```
 
-## Learning October
+3. Install the project dependencies:
 
-The best place to learn October CMS is by [reading the documentation](https://docs.octobercms.com) or [following some tutorials](https://octobercms.com/support/articles/tutorials).
+```bash
+composer install
+```
 
-You may also watch this [introductory video](https://www.youtube.com/watch?v=yLZTOeOS7wI). Make sure to check out our [official YouTube channel](https://www.youtube.com/c/OctoberCMSOfficial). There is also the excellent video series by [Watch & Learn](https://watch-learn.com/series/making-websites-with-october-cms).
+4. Configure the local environment and database connection.
 
-For code examples of building with October CMS, visit the [RainLab Plugin Suite](https://github.com/rainlab) or the [October Demos Repo](https://github.com/octoberdemos).
+5. Run the October CMS migrations:
 
-## Coding Standards
+```bash
+php artisan october:migrate
+```
 
-Please follow the following guides and code standards:
+6. Start the local development server:
 
-* [PSR 4 Coding Standards](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md)
-* [PSR 2 Coding Style Guide](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md)
-* [PSR 1 Coding Standards](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-1-basic-coding-standard.md)
+```bash
+php artisan serve
+```
 
-## Security Vulnerabilities
+7. Open the public website in the browser using the local URL provided by the development server.
 
-Please review [our security policy](https://github.com/octobercms/october/security/policy) on how to report security vulnerabilities.
+## Database Setup
 
-## Development Team
+The project uses MySQL / MariaDB as its database.
 
-October CMS was founded in 2014 by Alexey Bobkov and Sam Georges. Today it is supported by a worldwide network of [partners](https://octobercms.com/partners) and contributors.
+A local database must be created before running the project. Database connection settings should be configured in the local environment file.
 
-## Foundation library
+Real database passwords, credentials, license keys, and other environment secrets must not be committed to the repository.
 
-The CMS uses [Laravel](https://laravel.com) as a foundation PHP framework.
+## Backend Administration
 
-## Contact
+The October CMS backend administration area can be accessed locally through:
 
-For announcements and updates:
+```text
+/admin
+```
 
-* [Contact Us Page](https://octobercms.com/contact)
-* [Follow us on Twitter](https://twitter.com/octobercms)
-* [Like us on Facebook](https://facebook.com/octobercms)
+For example, when using the Laravel development server:
 
-To chat or hang out:
+```text
+http://127.0.0.1:8000/admin
+```
 
-* [Join us on Discord](https://discord.gg/gEKgwSZ)
+A local administrator account is required to access the backend. Real usernames and passwords are not included in this repository.
 
-## License
+## Custom Theme
 
-The October CMS platform is licensed software, see [End User License Agreement](./LICENSE.md) (EULA) for more details.
+The custom theme created for this project is:
+
+```text
+training-theme
+```
+
+The main theme structure includes:
+
+```text
+themes/training-theme/
+├── assets/
+│   └── css/
+│       └── style.css
+├── content/
+│   ├── home-intro.htm
+│   └── about-intro.htm
+├── layouts/
+│   └── default.htm
+├── pages/
+│   ├── home.htm
+│   ├── about.htm
+│   └── contact.htm
+└── partials/
+    ├── header.htm
+    ├── footer.htm
+    └── hero.htm
+```
+
+## Website Pages
+
+The website contains three main pages:
+
+- Home (`/`)
+- About (`/about`)
+- Contact (`/contact`)
+
+All pages use the shared main layout.
+
+## Reusable Layout and Partials
+
+The `default.htm` layout provides the shared HTML structure for the website and contains the main page content area.
+
+Reusable partials are used to avoid duplicating common sections:
+
+- `header.htm` contains the website header and navigation.
+- `footer.htm` contains the shared footer.
+- `hero.htm` contains the reusable hero section.
+
+## CMS-Managed Content
+
+The project separates editable content from the page templates using October CMS content files.
+
+Two pieces of managed content are currently used:
+
+- `home-intro.htm`
+- `about-intro.htm`
+
+These content files are rendered inside the Home and About pages instead of hardcoding all page text directly into the page templates.
+
+## Navigation
+
+The shared header provides navigation between the Home, About, and Contact pages.
+
+October CMS page URLs are used for navigation, and the current page receives an active navigation state. Internal page URLs also continue to work correctly after a browser refresh.
+
+## Responsive Styling
+
+Basic responsive styling is included in the custom theme.
+
+The layout adapts to desktop, tablet, and mobile screen sizes. The navigation, hero section, page content, and footer are adjusted on smaller screens to prevent major overflow or broken sections.
+
+## CMS Concept Comparison
+
+In Tasks 18 and 19, dynamic pages were built using Laravel and Vue. The frontend used reusable Vue components to render different content blocks, while the backend was responsible for storing and providing the page and block data through APIs.
+
+October CMS provides similar concepts but organizes them directly around CMS features. Pages define the individual routes and content of the website, while Layouts provide a shared structure that can be reused across multiple pages. This is similar to using a common application layout in the previous Vue implementation.
+
+Partials are reusable sections such as the header, footer, and hero section. They are similar to reusable Vue components because they prevent repeated markup and allow the same section to be included in multiple places.
+
+Editable content in October CMS separates managed content from the page structure. Instead of hardcoding all text inside a page template, content can be managed separately and rendered by the page. This is similar to the dynamic content blocks used in Tasks 18 and 19, where the page structure remained reusable while the actual content came from managed data.
+
+Overall, both approaches separate presentation from content and encourage reusable website structures. The main difference is that October CMS provides these concepts as part of the CMS itself, while the previous Laravel and Vue implementation required us to build more of the content-management and dynamic-rendering logic ourselves.
+
+## Challenges and Notes
+
+During the initial setup, the local database configuration required checking the MariaDB port used by XAMPP and creating the October CMS database before completing the installation.
+
+The project was then configured with a separate custom theme instead of performing the implementation inside the default demonstration theme.
+
+The project also provided practical experience with the relationship between October CMS pages, layouts, partials, content files, and the backend administration area.
