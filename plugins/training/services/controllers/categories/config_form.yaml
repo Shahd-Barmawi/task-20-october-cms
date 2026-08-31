@@ -1,0 +1,13 @@
+name: Category
+form: $/training/services/models/category/fields.yaml
+modelClass: Training\Services\Models\Category
+
+create:
+    title: Create Category
+    redirect: training/services/categories/update/:id
+    redirectClose: training/services/categories
+
+update:
+    title: Edit Category
+    redirect: training/services/categories
+    redirectClose: training/services/categories

@@ -1,3 +1,15 @@
-v1.0.2:
-    - Create services table
+v1.0.1:
+    - First version of Services
     - create_services_table.php
+
+v1.0.2:
+    - Create service categories
+    - create_categories_table.php
+
+v1.0.3:
+    - Add category relationship to services
+    - add_category_id_to_services_table.php
+
+v1.0.4:
+    - Create service categories table
+    - create_categories_table.php

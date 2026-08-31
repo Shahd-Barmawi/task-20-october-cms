@@ -1,0 +1,8 @@
+list: $/training/services/models/category/columns.yaml
+modelClass: Training\Services\Models\Category
+title: Service Categories
+recordUrl: training/services/categories/update/:id
+noRecordsMessage: No categories found
+
+toolbar:
+    buttons: list_toolbar

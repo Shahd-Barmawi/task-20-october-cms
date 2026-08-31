@@ -1,12 +1,11 @@
 columns:
-    title:
-        label: Title
+    name:
+        label: Name
         searchable: true
 
-    category:
-        label: Category
-        relation: category
-        select: name
+    slug:
+        label: Slug
+        searchable: true
 
     is_active:
         label: Status

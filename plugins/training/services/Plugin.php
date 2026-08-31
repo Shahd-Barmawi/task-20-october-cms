@@ -13,7 +13,7 @@ class Plugin extends PluginBase
             'name' => 'Services',
             'description' => 'Manage training services and display them dynamically.',
             'author' => 'Training',
-            'icon' => 'icon-briefcase'
+            'icon' => 'icon-briefcase',
         ];
     }
 
@@ -26,6 +26,20 @@ class Plugin extends PluginBase
                 'icon' => 'icon-briefcase',
                 'permissions' => [],
                 'order' => 500,
+
+                'sideMenu' => [
+                    'services' => [
+                        'label' => 'Services',
+                        'url' => Backend::url('training/services/services'),
+                        'icon' => 'icon-list',
+                    ],
+
+                    'categories' => [
+                        'label' => 'Categories',
+                        'url' => Backend::url('training/services/categories'),
+                        'icon' => 'icon-folder',
+                    ],
+                ],
             ],
         ];
     }

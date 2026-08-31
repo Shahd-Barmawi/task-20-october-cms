@@ -17,15 +17,22 @@ fields:
         size: large
         span: full
 
+    category:
+        label: Category
+        type: relation
+        nameFrom: name
+        span: left
+        emptyOption: Select a category
+
     is_active:
         label: Active
         type: switch
         default: true
-        span: left
+        span: right
 
     display_order:
         label: Display Order
         type: number
         default: 0
-        span: right
+        span: left
         required: true

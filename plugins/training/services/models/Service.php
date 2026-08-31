@@ -16,6 +16,7 @@ class Service extends Model
         'content',
         'is_active',
         'display_order',
+        'category_id',
     ];
 
     public $rules = [
@@ -24,5 +25,13 @@ class Service extends Model
         'content' => 'nullable',
         'is_active' => 'boolean',
         'display_order' => 'required|integer|min:0',
+        'category_id' => 'nullable|integer',
+    ];
+
+    public $belongsTo = [
+        'category' => [
+            \Training\Services\Models\Category::class,
+            'key' => 'category_id'
+        ]
     ];
 }

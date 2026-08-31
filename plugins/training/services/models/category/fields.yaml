@@ -1,0 +1,25 @@
+fields:
+    name:
+        label: Name
+        type: text
+        span: full
+        required: true
+
+    slug:
+        label: Slug
+        type: text
+        span: full
+        required: true
+
+    is_active:
+        label: Active
+        type: switch
+        default: true
+        span: left
+
+    display_order:
+        label: Display Order
+        type: number
+        default: 0
+        span: right
+        required: true
