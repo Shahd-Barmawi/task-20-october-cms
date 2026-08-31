@@ -24,15 +24,25 @@ fields:
         span: left
         emptyOption: Select a category
 
+    image:
+        label: Service Image
+        type: fileupload
+        mode: image
+        imageWidth: 300
+        imageHeight: 200
+        fileTypes: jpg,jpeg,png,webp
+        maxFiles: 1
+        span: right
+
     is_active:
         label: Active
         type: switch
         default: true
-        span: right
+        span: left
 
     display_order:
         label: Display Order
         type: number
         default: 0
-        span: left
+        span: right
         required: true

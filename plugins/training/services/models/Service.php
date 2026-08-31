@@ -3,6 +3,7 @@
 namespace Training\Services\Models;
 
 use Model;
+use System\Models\File;
 
 class Service extends Model
 {
@@ -31,7 +32,11 @@ class Service extends Model
     public $belongsTo = [
         'category' => [
             \Training\Services\Models\Category::class,
-            'key' => 'category_id'
-        ]
+            'key' => 'category_id',
+        ],
+    ];
+
+    public $attachOne = [
+        'image' => File::class,
     ];
 }
