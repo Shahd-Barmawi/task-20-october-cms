@@ -1,0 +1,37 @@
+<section class="services-section">
+    <div class="container">
+        <h2>Our Services</h2>
+
+        {% if services|length > 0 %}
+
+            <div class="services-grid">
+                {% for service in services %}
+
+                    <article class="service-card">
+                        <h3>{{ service.title }}</h3>
+
+                        {% if service.short_description %}
+                            <p class="service-short-description">
+                                {{ service.short_description }}
+                            </p>
+                        {% endif %}
+
+                        {% if service.content %}
+                            <div class="service-content">
+                                {{ service.content }}
+                            </div>
+                        {% endif %}
+                    </article>
+
+                {% endfor %}
+            </div>
+
+        {% else %}
+
+            <p class="services-empty">
+                No services are currently available.
+            </p>
+
+        {% endif %}
+    </div>
+</section>

@@ -29,4 +29,11 @@ class Plugin extends PluginBase
             ],
         ];
     }
+
+    public function registerComponents()
+    {
+        return [
+            \Training\Services\Components\ServicesList::class => 'servicesList',
+        ];
+    }
 }
