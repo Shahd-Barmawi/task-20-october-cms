@@ -1,8 +1,31 @@
-# ===================================
-#  Form Field Definitions
-# ===================================
-
 fields:
-    id:
-        label: ID
-        disabled: true
+    title:
+        label: Title
+        type: text
+        span: full
+        required: true
+
+    short_description:
+        label: Short Description
+        type: textarea
+        size: small
+        span: full
+
+    content:
+        label: Detailed Description
+        type: textarea
+        size: large
+        span: full
+
+    is_active:
+        label: Active
+        type: switch
+        default: true
+        span: left
+
+    display_order:
+        label: Display Order
+        type: number
+        default: 0
+        span: right
+        required: true

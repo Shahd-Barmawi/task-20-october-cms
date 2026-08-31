@@ -1,0 +1,13 @@
+name: Service
+form: $/training/services/models/service/fields.yaml
+modelClass: Training\Services\Models\Service
+
+create:
+    title: Create Service
+    redirect: training/services/services/update/:id
+    redirectClose: training/services/services
+
+update:
+    title: Edit Service
+    redirect: training/services/services
+    redirectClose: training/services/services

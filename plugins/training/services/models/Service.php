@@ -4,9 +4,6 @@ namespace Training\Services\Models;
 
 use Model;
 
-/**
- * Service Model
- */
 class Service extends Model
 {
     use \October\Rain\Database\Traits\Validation;

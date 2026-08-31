@@ -1,1 +1,3 @@
-v1.0.1: First version of Services
+v1.0.2:
+    - Create services table
+    - create_services_table.php

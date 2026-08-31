@@ -1,8 +1,16 @@
-# ===================================
-#  List Column Definitions
-# ===================================
-
 columns:
-    id:
-        label: ID
+    title:
+        label: Title
         searchable: true
+
+    is_active:
+        label: Status
+        type: switch
+
+    display_order:
+        label: Order
+        type: number
+
+    updated_at:
+        label: Updated At
+        type: datetime

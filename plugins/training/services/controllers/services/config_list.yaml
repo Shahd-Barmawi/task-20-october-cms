@@ -1,0 +1,8 @@
+list: $/training/services/models/service/columns.yaml
+modelClass: Training\Services\Models\Service
+title: Services
+recordUrl: training/services/services/update/:id
+noRecordsMessage: No services found
+
+toolbar:
+    buttons: list_toolbar
