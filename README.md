@@ -430,3 +430,318 @@ The complete dynamic CMS flow was verified by:
 6. Editing a Service in the backend and verifying that the change appeared on the public website.
 7. Changing the component `limit` property and verifying that the number of displayed Services changed accordingly.
 8. Verifying backend validation for required Service fields.
+
+---
+
+# Task 22 – Service Categories, Images & Details
+
+## Task Overview
+
+Task 22 extends the dynamic Services plugin developed in Task 21 by adding Service Categories, image attachments, category-based filtering, and individual Service Details pages.
+
+The existing `Training.Services` plugin was extended rather than creating a separate plugin. This keeps the Services functionality organized in one reusable October CMS plugin.
+
+## Service Category Model
+
+A new `Category` model was added to organize Services into categories.
+
+The Category entity contains the following fields:
+
+- `id`
+- `name`
+- `slug`
+- `is_active`
+- `display_order`
+- `created_at`
+- `updated_at`
+
+Categories are stored in:
+
+```text
+training_services_categories
+```
+
+The October CMS backend allows administrators to:
+
+- View Categories.
+- Create a Category.
+- Edit a Category.
+- Delete a Category.
+- Set a Category as active or inactive.
+- Configure its display order.
+
+The Category model also includes validation. The category name and slug are required, and the slug must be unique.
+
+Duplicate category slugs are rejected with validation feedback in the October CMS backend.
+
+## Service-to-Category Relationship
+
+Each Service can belong to a Category.
+
+The existing Services table was extended with:
+
+```text
+category_id
+```
+
+The Service model uses an October CMS `belongsTo` relationship to connect a Service to its Category.
+
+Conceptually, the relationship is:
+
+```text
+Category
+   |
+   | has many
+   ↓
+Services
+
+Service
+   |
+   | belongs to
+   ↓
+Category
+```
+
+This relationship allows the backend Service form to provide a Category selector and allows the public components to access Category information directly from each Service.
+
+The relationship is also used when retrieving public Services so that Services belonging to inactive Categories are not displayed.
+
+## Service Image Attachment
+
+Task 22 adds image support to Services using the October CMS file attachment system.
+
+The Service model uses an `attachOne` relationship for its image.
+
+This allows each Service to have one uploaded image that can be managed directly from the October CMS backend.
+
+Administrators can:
+
+- Upload a Service image.
+- Replace an existing image.
+- Remove an image.
+- Save the attachment as part of the Service record.
+
+The frontend retrieves the attached image through the Service model relationship rather than storing a hardcoded image path in the page markup.
+
+Service images are displayed inside controlled responsive containers so uploaded images remain consistent in size without being distorted.
+
+## Backend Management Changes
+
+The existing Services backend management interface was extended for Task 22.
+
+The main backend navigation now provides access to:
+
+```text
+Services
+Categories
+```
+
+The Service Create/Edit form includes:
+
+- Title
+- Short Description
+- Detailed Description
+- Category
+- Service Image
+- Active status
+- Display Order
+
+The Services backend list includes useful information such as:
+
+- Title
+- Category
+- Status
+- Display Order
+- Updated At
+
+The Categories backend section provides its own list and Create/Edit forms for managing category records.
+
+These features use October CMS backend controllers, models, forms, lists, relationships, and file attachments rather than a separate administration interface.
+
+## Category Filtering
+
+The reusable `ServicesList` component was extended to support Category filtering.
+
+Only active Categories are displayed as public filter options.
+
+The Services section provides filters such as:
+
+```text
+All Services
+Web Development
+Mobile Development
+Design
+```
+
+Selecting a Category filters the Services using the Category slug.
+
+For example:
+
+```text
+?category=mobile-development
+```
+
+The component then retrieves Services belonging to the selected active Category.
+
+Only Services that are active and belong to an active Category are displayed publicly.
+
+If no Services are available for the selected Category, the page displays a clear empty-state message rather than an empty or broken section.
+
+## Service Details Component
+
+A reusable CMS component named:
+
+```text
+ServiceDetails
+```
+
+was added to the plugin.
+
+The component retrieves a single Service using the dynamic Service ID from the page URL.
+
+The component loads the Service together with its related Category and attached image.
+
+Only active Services belonging to active Categories can be displayed through the public Service Details page.
+
+If the requested Service does not exist, is inactive, or belongs to an inactive Category, the page displays a clear:
+
+```text
+Service Not Found
+```
+
+state instead of exposing unpublished content.
+
+## Service Details Page and URL
+
+A new CMS page was created for individual Service details.
+
+The dynamic URL pattern is:
+
+```text
+/services/:id
+```
+
+For example:
+
+```text
+/services/3
+```
+
+Each Service card on the public Services section contains a `View Details` link that routes the visitor to the corresponding Service Details page.
+
+The details page displays:
+
+- Service image
+- Category
+- Service title
+- Short description
+- Detailed description
+- Back to Services navigation
+
+The page uses the existing shared theme layout and responsive styling.
+
+## Database Updates
+
+Task 22 introduces database changes through the October CMS migration/update mechanism.
+
+The updates include:
+
+- Creating the Categories table.
+- Adding `category_id` to the existing Services table.
+- Registering the new plugin update versions.
+
+After pulling or cloning the updated project, the database changes can be applied using:
+
+```bash
+php artisan october:migrate
+```
+
+No manual database table creation is required.
+
+## October CMS Relationships and File Attachments
+
+October CMS model relationships are used to connect Services and Categories.
+
+A Service uses a `belongsTo` relationship to access its Category. This allows the application to retrieve related Category information through the Service model and makes it possible to provide a relation field in the backend Service form.
+
+The relationship is also used by the public Services component to filter Services by Category and prevent Services from inactive Categories from appearing publicly.
+
+October CMS file attachments are used to manage Service images.
+
+The Service model uses an `attachOne` relationship, allowing one image to be associated with each Service. October CMS manages the uploaded file and its relationship to the model, while the frontend accesses the image through the Service model.
+
+This keeps database relationships, file management, backend administration, and frontend rendering integrated through October CMS conventions.
+
+## Public Services Flow
+
+The updated public content flow is:
+
+```text
+October CMS Backend
+        ↓
+Categories + Services + Images
+        ↓
+October CMS Models
+        ↓
+Model Relationships
+        ↓
+ServicesList / ServiceDetails Components
+        ↓
+Reusable Component Markup
+        ↓
+Public Website
+```
+
+Changes made to Categories, Services, statuses, relationships, images, or Service content in the October CMS backend are reflected dynamically on the public website.
+
+## Task 22 Setup
+
+After cloning the repository, install the required project dependencies:
+
+```bash
+composer install
+```
+
+Configure the local environment and database connection.
+
+Do not commit real database credentials or other sensitive environment values.
+
+Apply the October CMS database and plugin updates:
+
+```bash
+php artisan october:migrate
+```
+
+Start the local development server:
+
+```bash
+php artisan serve
+```
+
+The public website can then be opened using the local development URL.
+
+The October CMS backend is available at:
+
+```text
+/admin
+```
+
+A local administrator account must be configured separately. Administrator usernames and passwords are not stored in the README.
+
+## Task 22 Verification
+
+Task 22 was verified by:
+
+1. Creating multiple Categories through the October CMS backend.
+2. Assigning Services to different Categories.
+3. Uploading images to Services.
+4. Confirming the Service backend list displays Category information.
+5. Confirming Service Create/Edit forms allow Category selection and image management.
+6. Confirming only active Categories appear as public filter options.
+7. Filtering the public Services section by Category.
+8. Confirming active Services display their Category and image publicly.
+9. Opening individual Services through the dynamic `/services/:id` details page.
+10. Confirming inactive Services cannot be accessed publicly.
+11. Confirming missing Service IDs display a clear `Service Not Found` state.
+12. Confirming duplicate Category slugs are rejected by backend validation.
+13. Confirming the Services and Service Details sections remain responsive across different screen sizes.
