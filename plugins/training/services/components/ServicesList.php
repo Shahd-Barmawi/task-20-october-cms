@@ -1,6 +1,4 @@
-<?php
-
-namespace Training\Services\Components;
+<?php namespace Training\Services\Components;
 
 use Cms\Classes\ComponentBase;
 use Training\Services\Models\Service;
@@ -13,7 +11,7 @@ class ServicesList extends ComponentBase
     {
         return [
             'name' => 'Services List',
-            'description' => 'Displays active services from the database.'
+            'description' => 'Displays active services with category and image.'
         ];
     }
 
@@ -35,7 +33,11 @@ class ServicesList extends ComponentBase
     {
         $limit = (int) $this->property('limit');
 
-        $query = Service::where('is_active', true)
+        $query = Service::with(['category', 'image'])
+            ->where('is_active', true)
+            ->whereHas('category', function ($query) {
+                $query->where('is_active', true);
+            })
             ->orderBy('display_order', 'asc');
 
         if ($limit > 0) {
