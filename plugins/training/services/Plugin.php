@@ -48,6 +48,7 @@ class Plugin extends PluginBase
     {
         return [
             \Training\Services\Components\ServicesList::class => 'servicesList',
+            \Training\Services\Components\ServiceDetails::class => 'serviceDetails',
         ];
     }
 }

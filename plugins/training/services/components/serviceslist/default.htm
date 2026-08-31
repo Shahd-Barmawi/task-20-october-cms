@@ -20,6 +20,7 @@
 
         {% if services|length > 0 %}
             <div class="services-grid">
+
                 {% for service in services %}
                     <article class="service-card">
 
@@ -28,8 +29,7 @@
                                 <img
                                     src="{{ service.image.path }}"
                                     alt="{{ service.title }}"
-                                    class="service-image"
-                                >
+                                    class="service-image">
                             </div>
                         {% endif %}
 
@@ -55,9 +55,16 @@
                                 </div>
                             {% endif %}
 
+                            <a
+                                href="{{ 'service-details'|page({ id: service.id }) }}"
+                                class="service-details-link">
+                                View Details
+                            </a>
+
                         </div>
                     </article>
                 {% endfor %}
+
             </div>
         {% else %}
             <p class="services-empty">

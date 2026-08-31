@@ -1,0 +1,64 @@
+<section class="service-details-section">
+    <div class="container">
+
+        {% if service %}
+
+            <a href="{{ 'home'|page }}" class="service-back-link">
+                ← Back to Services
+            </a>
+
+            <article class="service-details-card">
+
+                {% if service.image %}
+                    <div class="service-details-image-wrapper">
+                        <img
+                            src="{{ service.image.path }}"
+                            alt="{{ service.title }}"
+                            class="service-details-image"
+                        >
+                    </div>
+                {% endif %}
+
+                <div class="service-details-content">
+
+                    {% if service.category %}
+                        <span class="service-category">
+                            {{ service.category.name }}
+                        </span>
+                    {% endif %}
+
+                    <h1>{{ service.title }}</h1>
+
+                    {% if service.short_description %}
+                        <p class="service-details-intro">
+                            {{ service.short_description }}
+                        </p>
+                    {% endif %}
+
+                    {% if service.content %}
+                        <div class="service-details-description">
+                            {{ service.content }}
+                        </div>
+                    {% endif %}
+
+                </div>
+
+            </article>
+
+        {% else %}
+
+            <div class="service-not-found">
+                <h1>Service Not Found</h1>
+                <p>
+                    The requested service is unavailable or no longer published.
+                </p>
+
+                <a href="{{ 'home'|page }}" class="service-back-link">
+                    Back to Services
+                </a>
+            </div>
+
+        {% endif %}
+
+    </div>
+</section>
