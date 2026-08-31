@@ -2,9 +2,24 @@
     <div class="container">
         <h2>Our Services</h2>
 
+        <div class="services-filters">
+            <a
+                href="{{ this.page.url }}"
+                class="service-filter {{ not selectedCategory ? 'active' : '' }}">
+                All Services
+            </a>
+
+            {% for category in categories %}
+                <a
+                    href="{{ this.page.url }}?category={{ category.slug }}"
+                    class="service-filter {{ selectedCategory == category.slug ? 'active' : '' }}">
+                    {{ category.name }}
+                </a>
+            {% endfor %}
+        </div>
+
         {% if services|length > 0 %}
             <div class="services-grid">
-
                 {% for service in services %}
                     <article class="service-card">
 
@@ -43,11 +58,10 @@
                         </div>
                     </article>
                 {% endfor %}
-
             </div>
         {% else %}
             <p class="services-empty">
-                No services are currently available.
+                No services are currently available in this category.
             </p>
         {% endif %}
     </div>
