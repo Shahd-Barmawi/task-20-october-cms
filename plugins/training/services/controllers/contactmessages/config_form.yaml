@@ -1,0 +1,24 @@
+# ===================================
+# Form Behavior Config
+# ===================================
+
+name: Contact Message
+
+form: $/training/services/models/contactmessage/fields.yaml
+
+modelClass: Training\Services\Models\ContactMessage
+
+defaultRedirect: training/services/contactmessages
+
+create:
+    title: Create Contact Message
+    redirect: training/services/contactmessages/update/:id
+    redirectClose: training/services/contactmessages
+
+update:
+    title: Contact Message Details
+    redirect: training/services/contactmessages
+    redirectClose: training/services/contactmessages
+
+preview:
+    title: Contact Message Details

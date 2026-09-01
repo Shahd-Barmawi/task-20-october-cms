@@ -84,7 +84,9 @@ class Plugin extends PluginBase
                 'sideMenu' => [
                     'services' => [
                         'label' => 'Services',
-                        'url' => Backend::url('training/services/services'),
+                        'url' => Backend::url(
+                            'training/services/services'
+                        ),
                         'icon' => 'icon-list',
                         'permissions' => [
                             'training.services.manage_services',
@@ -93,10 +95,23 @@ class Plugin extends PluginBase
 
                     'categories' => [
                         'label' => 'Categories',
-                        'url' => Backend::url('training/services/categories'),
+                        'url' => Backend::url(
+                            'training/services/categories'
+                        ),
                         'icon' => 'icon-folder',
                         'permissions' => [
                             'training.services.manage_categories',
+                        ],
+                    ],
+
+                    'contactmessages' => [
+                        'label' => 'Contact Messages',
+                        'url' => Backend::url(
+                            'training/services/contactmessages'
+                        ),
+                        'icon' => 'icon-envelope',
+                        'permissions' => [
+                            'training.services.manage_contact_messages',
                         ],
                     ],
                 ],
@@ -122,9 +137,14 @@ class Plugin extends PluginBase
     public function registerComponents()
     {
         return [
-            \Training\Services\Components\ServicesList::class => 'servicesList',
-            \Training\Services\Components\ServiceDetails::class => 'serviceDetails',
-            \Training\Services\Components\ContactForm::class => 'contactForm',
+            \Training\Services\Components\ServicesList::class
+                => 'servicesList',
+
+            \Training\Services\Components\ServiceDetails::class
+                => 'serviceDetails',
+
+            \Training\Services\Components\ContactForm::class
+                => 'contactForm',
         ];
     }
 }

@@ -1,0 +1,33 @@
+# ===================================
+# List Behavior Config
+# ===================================
+
+list: $/training/services/models/contactmessage/columns.yaml
+
+modelClass: Training\Services\Models\ContactMessage
+
+title: Contact Messages
+
+recordUrl: training/services/contactmessages/update/:id
+
+noRecordsMessage: No contact messages found.
+
+recordsPerPage: 20
+
+showPageNumbers: true
+
+showSetup: true
+
+showSorting: true
+
+showCheckboxes: true
+
+defaultSort:
+    column: created_at
+    direction: desc
+
+toolbar:
+    buttons: list_toolbar
+
+    search:
+        prompt: Search contact messages...

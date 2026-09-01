@@ -1,8 +1,40 @@
-# ===================================
-#  Form Field Definitions
-# ===================================
-
 fields:
-    id:
-        label: ID
+    name:
+        label: Sender Name
+        type: text
+        span: left
+        disabled: true
+
+    email:
+        label: Email
+        type: text
+        span: right
+        disabled: true
+
+    subject:
+        label: Subject
+        type: text
+        span: full
+        disabled: true
+
+    message:
+        label: Message
+        type: textarea
+        size: huge
+        span: full
+        disabled: true
+
+    status:
+        label: Status
+        type: dropdown
+        options:
+            new: New
+            read: Read
+        span: left
+
+    created_at:
+        label: Submitted At
+        type: datepicker
+        mode: datetime
+        span: right
         disabled: true

@@ -1,8 +1,20 @@
-# ===================================
-#  List Column Definitions
-# ===================================
-
 columns:
-    id:
-        label: ID
+    name:
+        label: Name
         searchable: true
+
+    email:
+        label: Email
+        searchable: true
+
+    subject:
+        label: Subject
+        searchable: true
+
+    status:
+        label: Status
+        type: text
+
+    created_at:
+        label: Submitted At
+        type: datetime
