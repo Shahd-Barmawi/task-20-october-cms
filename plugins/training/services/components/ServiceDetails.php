@@ -1,17 +1,17 @@
 <?php namespace Training\Services\Components;
 
 use Cms\Classes\ComponentBase;
-use Training\Services\Models\Service;
+use Training\Services\Models\ContactMessage;
+use ValidationException;
+use Validator;
 
-class ServiceDetails extends ComponentBase
+class ContactForm extends ComponentBase
 {
-    public $service;
-
     public function componentDetails()
     {
         return [
-            'name' => 'Service Details',
-            'description' => 'Displays the details of a single published service.'
+            'name' => 'Contact Form',
+            'description' => 'Handles contact form submissions using October CMS AJAX.'
         ];
     }
 
@@ -20,22 +20,45 @@ class ServiceDetails extends ComponentBase
         return [];
     }
 
-    public function onRun()
+    public function onSubmit()
     {
-        $id = $this->param('id');
+        $data = [
+            'name' => trim((string) post('name')),
+            'email' => trim((string) post('email')),
+            'subject' => trim((string) post('subject')),
+            'message' => trim((string) post('message')),
+        ];
 
-        $this->service = Service::with(['category', 'image'])
-            ->where('id', $id)
-            ->where('is_active', true)
-            ->whereHas('category', function ($query) {
-                $query->where('is_active', true);
-            })
-            ->first();
+        $validator = Validator::make($data, [
+            'name' => 'required|max:255',
+            'email' => 'required|email|max:255',
+            'subject' => 'required|max:255',
+            'message' => 'required|max:5000',
+        ], [
+            'name.required' => 'Please enter your name.',
+            'email.required' => 'Please enter your email address.',
+            'email.email' => 'Please enter a valid email address.',
+            'subject.required' => 'Please enter a subject.',
+            'message.required' => 'Please enter your message.',
+        ]);
 
-        $this->page['service'] = $this->service;
-
-        if (!$this->service) {
-            $this->setStatusCode(404);
+        if ($validator->fails()) {
+            throw new ValidationException($validator);
         }
+
+        $contactMessage = new ContactMessage();
+        $contactMessage->name = $data['name'];
+        $contactMessage->email = $data['email'];
+        $contactMessage->subject = $data['subject'];
+        $contactMessage->message = $data['message'];
+        $contactMessage->status = 'new';
+        $contactMessage->save();
+
+        return [
+            '#contact-form-result' =>
+                '<div class="contact-success-message">
+                    Thank you! Your message has been sent successfully.
+                </div>'
+        ];
     }
 }
