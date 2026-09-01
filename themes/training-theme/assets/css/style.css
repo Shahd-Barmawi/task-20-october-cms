@@ -1043,4 +1043,12 @@ main {
     opacity: 0.65;
     cursor: wait;
 }
+
+.contact-honeypot {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
 /* End of Contact Page */

@@ -29,11 +29,28 @@ class ContactForm extends ComponentBase
             'message' => trim((string) post('message')),
         ];
 
+        $honeypot = trim((string) post('website'));
+
+        if ($honeypot !== '') {
+            return [
+                '#contact-form-result' =>
+                    '<div class="contact-success-message">
+                        Thank you! Your message has been sent successfully.
+                    </div>'
+            ];
+        }
+
         $validator = Validator::make($data, [
             'name' => 'required|max:255',
             'email' => 'required|email|max:255',
             'subject' => 'required|max:255',
             'message' => 'required|max:5000',
+        ], [
+            'name.required' => 'Please enter your name.',
+            'email.required' => 'Please enter your email address.',
+            'email.email' => 'Please enter a valid email address.',
+            'subject.required' => 'Please enter a subject.',
+            'message.required' => 'Please enter your message.',
         ]);
 
         if ($validator->fails()) {
@@ -50,7 +67,9 @@ class ContactForm extends ComponentBase
 
         return [
             '#contact-form-result' =>
-                '<div class="contact-success-message">Thank you! Your message has been sent successfully.</div>'
+                '<div class="contact-success-message">
+                    Thank you! Your message has been sent successfully.
+                </div>'
         ];
     }
 }
