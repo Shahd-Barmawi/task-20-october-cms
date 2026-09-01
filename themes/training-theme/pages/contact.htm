@@ -2,15 +2,46 @@ title = "Contact"
 url = "/contact"
 layout = "default"
 ==
+use Training\Services\Models\ContactSettings;
+
+function onStart()
+{
+    $this['contactSettings'] = ContactSettings::instance();
+}
+==
 <section class="page-section">
     <div class="container">
         <h1>Contact Us</h1>
 
-        <p>
-            Have a question about our training project?
-            Feel free to contact us.
-        </p>
+        {% if contactSettings.help_text %}
+            <p>
+                {{ contactSettings.help_text }}
+            </p>
+        {% endif %}
 
-        <p>Email: info@example.com</p>
+        <div class="contact-info">
+            {% if contactSettings.contact_email %}
+                <p>
+                    <strong>Email:</strong>
+                    <a href="mailto:{{ contactSettings.contact_email }}">
+                        {{ contactSettings.contact_email }}
+                    </a>
+                </p>
+            {% endif %}
+
+            {% if contactSettings.phone %}
+                <p>
+                    <strong>Phone:</strong>
+                    {{ contactSettings.phone }}
+                </p>
+            {% endif %}
+
+            {% if contactSettings.address %}
+                <p>
+                    <strong>Address:</strong>
+                    {{ contactSettings.address }}
+                </p>
+            {% endif %}
+        </div>
     </div>
 </section>
