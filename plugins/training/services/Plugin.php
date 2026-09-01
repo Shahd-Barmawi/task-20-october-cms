@@ -91,6 +91,7 @@ class Plugin extends PluginBase
                         'permissions' => [
                             'training.services.manage_services',
                         ],
+                        'order' => 100,
                     ],
 
                     'categories' => [
@@ -102,6 +103,7 @@ class Plugin extends PluginBase
                         'permissions' => [
                             'training.services.manage_categories',
                         ],
+                        'order' => 200,
                     ],
 
                     'contactmessages' => [
@@ -113,6 +115,7 @@ class Plugin extends PluginBase
                         'permissions' => [
                             'training.services.manage_contact_messages',
                         ],
+                        'order' => 300,
                     ],
                 ],
             ],
