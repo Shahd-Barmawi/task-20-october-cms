@@ -1021,4 +1021,26 @@ main {
         width: 100%;
     }
 }
-/* End of Contact Page Styles */
+
+.contact-field-error {
+    display: block;
+    min-height: 18px;
+    margin-top: 4px;
+    color: #dc2626;
+    font-size: 13px;
+}
+
+.contact-success-message {
+    margin-bottom: 20px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    background: #ecfdf5;
+    color: #047857;
+    font-weight: 600;
+}
+
+.contact-submit-btn.oc-loading {
+    opacity: 0.65;
+    cursor: wait;
+}
+/* End of Contact Page */

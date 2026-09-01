@@ -9,13 +9,20 @@ description = "Main website layout"
         <title>{{ this.page.title }}</title>
 
         <link rel="stylesheet" href="{{ 'assets/css/style.css'|theme }}" />
+
+        {% styles %}
     </head>
 
     <body>
         {% partial 'header' %}
 
-        <main>{% page %}</main>
+        <main>
+            {% page %}
+        </main>
 
         {% partial 'footer' %}
+
+        {% framework extras %}
+        {% scripts %}
     </body>
 </html>
