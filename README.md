@@ -745,3 +745,420 @@ Task 22 was verified by:
 11. Confirming missing Service IDs display a clear `Service Not Found` state.
 12. Confirming duplicate Category slugs are rejected by backend validation.
 13. Confirming the Services and Service Details sections remain responsive across different screen sizes.
+
+---
+
+# Task 23 – Permissions, Contact Settings & AJAX Contact Management
+
+## Task Overview
+
+Task 23 extends the existing `Training.Services` plugin by adding backend permissions, configurable contact information, a database-backed Contact Message entity, an AJAX-powered public Contact form, backend message management, validation, user feedback, and basic anti-spam protection.
+
+The existing `Training.Services` plugin and `training-theme` were extended rather than creating a separate plugin or frontend application. This keeps the functionality integrated with October CMS models, components, settings, permissions, backend controllers, AJAX handling, and the existing public theme.
+
+## Backend Permissions
+
+Task 23 introduces separate backend permissions for the main management areas of the plugin:
+
+- `training.services.manage_services` – allows access to Service management.
+- `training.services.manage_categories` – allows access to Category management.
+- `training.services.manage_contact_messages` – allows access to Contact Message management.
+
+These permissions are registered in the `Training.Services` plugin and are used by both the backend navigation and the corresponding backend controllers.
+
+Backend users only see management sections for which they have the required permission. Direct access to restricted management sections is also protected by controller permission requirements.
+
+This allows different backend users or roles to receive only the administrative access they require.
+
+## Contact Settings
+
+A configurable Contact Settings section was added to the October CMS backend.
+
+It allows administrators to manage public contact information without modifying the theme source code.
+
+The configurable Contact Settings include:
+
+- Contact email
+- Phone number
+- Address
+- Help text
+
+These values are managed through the October CMS backend settings area and are displayed dynamically on the public Contact page.
+
+When an administrator changes and saves a Contact Setting, the updated information is reflected on the public website without requiring a source-code change.
+
+## Contact Message Model
+
+A database-backed `ContactMessage` model was added to store messages submitted through the public Contact form.
+
+Contact Messages are stored in:
+
+```text
+training_services_contact_messages
+```
+
+Each Contact Message contains:
+
+- `id`
+- `name`
+- `email`
+- `subject`
+- `message`
+- `status`
+- `created_at`
+- `updated_at`
+
+The message status supports:
+
+```text
+new
+read
+```
+
+New public submissions are stored with the `new` status.
+
+## Contact Message Validation
+
+The `ContactMessage` model contains validation rules for the stored data.
+
+The validation requirements include:
+
+- Name is required.
+- Email is required and must contain a valid email address.
+- Subject is required.
+- Message is required.
+- Status is required and must be either `new` or `read`.
+- Maximum-length rules are applied where appropriate.
+
+Validation is also performed server-side by the Contact form AJAX handler before a Contact Message is saved.
+
+This prevents invalid requests from being stored even if browser-side validation is bypassed.
+
+## Public Contact Form
+
+The existing `/contact` page was extended with a responsive Contact Us form.
+
+The form contains the following fields:
+
+- Name
+- Email
+- Subject
+- Message
+
+The Contact page also displays the contact information configured through the October CMS backend settings.
+
+The form uses the existing `training-theme` design and remains usable on desktop and mobile-sized viewports.
+
+A separate Vue application is not required for the Contact form.
+
+## October CMS AJAX Handling
+
+The public Contact form uses the October CMS AJAX framework instead of relying on a traditional full-page form submission.
+
+The reusable CMS component:
+
+```text
+ContactForm
+```
+
+provides the server-side handler:
+
+```text
+onSubmit
+```
+
+The Contact submission flow is:
+
+```text
+Public Contact Form
+        ↓
+October CMS AJAX Request
+        ↓
+ContactForm::onSubmit
+        ↓
+Server-Side Validation
+        ↓
+ContactMessage Model
+        ↓
+Database
+```
+
+A valid Contact Message is saved to the database through the AJAX handler.
+
+Invalid submissions return validation feedback and are not saved.
+
+This keeps the form integrated with October CMS while providing a smoother user experience without requiring a separate JavaScript application.
+
+## Validation and User Feedback
+
+The Contact form provides clear validation and feedback for submitted data.
+
+The implementation includes:
+
+- Required-field validation.
+- Valid email format validation.
+- Server-side validation.
+- Clearly associated field validation messages.
+- Prevention of invalid database records.
+- Success feedback after a valid submission.
+- Prevention of duplicate submission while an AJAX request is being processed where practical.
+- Preservation of useful entered values when validation fails.
+
+After a successful submission, the visitor receives the following confirmation:
+
+```text
+Thank you! Your message has been sent successfully.
+```
+
+Invalid requests are not stored in the database.
+
+## Backend Contact Message Management
+
+Contact Messages can be managed through the October CMS backend.
+
+The plugin backend navigation provides access to:
+
+```text
+Services
+├── Services
+├── Categories
+└── Contact Messages
+```
+
+Administrators with the required Contact Messages permission can:
+
+- View the Contact Messages list.
+- Search Contact Messages.
+- Open an individual message.
+- View the sender name.
+- View the sender email.
+- View the subject.
+- View the full message.
+- View the submission date.
+- View the current status.
+- Change the status between `New` and `Read`.
+- Delete messages when appropriate.
+
+The Contact Messages list is organized with useful columns such as sender information, subject, status, and submission date.
+
+The newest submissions are displayed first to make incoming Contact Messages easier to manage.
+
+## Backend Navigation
+
+The plugin backend navigation is organized into three management sections:
+
+1. Services
+2. Categories
+3. Contact Messages
+
+Clear labels and icons are used for each section.
+
+The side-menu order is configured as:
+
+```text
+Services          → 100
+Categories        → 200
+Contact Messages  → 300
+```
+
+This keeps the backend navigation organized and predictable.
+
+Navigation visibility is also permission-aware.
+
+For example, a backend user with only the Category management permission can see the Categories section but cannot see the Services or Contact Messages management sections.
+
+Users without the required permission are also prevented from directly accessing restricted backend management pages.
+
+## Basic Anti-Spam Protection
+
+A honeypot field was added to the public Contact form as a basic anti-spam measure suitable for the training project.
+
+The honeypot field is hidden from normal visitors and is not intended to be completed by a human user.
+
+Simple automated bots may detect and populate hidden form fields. The server-side AJAX handler therefore checks the honeypot value before storing a Contact Message.
+
+The anti-spam flow is:
+
+```text
+Contact Form Submission
+        ↓
+Check Honeypot Field
+        ↓
+Is Honeypot Empty?
+      /       \
+    Yes        No
+     ↓          ↓
+Validate     Treat as Spam
+     ↓          ↓
+Save       Do Not Save
+Message       Message
+```
+
+If the honeypot field contains a value, the submission is treated as spam and no Contact Message is stored.
+
+The honeypot behavior was verified using a simulated bot submission. The number of Contact Message records remained unchanged after the spam submission, confirming that the message was not stored.
+
+## Security Review
+
+The Task 23 implementation was reviewed against the basic security requirements of the Contact management flow.
+
+### Server-Side Validation
+
+Contact form input is validated on the server before database storage.
+
+This is important because browser-side validation alone cannot be trusted. Browser validation can be bypassed by manually creating or modifying a request.
+
+Server-side validation ensures that the application itself determines whether submitted data is valid before saving it.
+
+### Safe Output Rendering
+
+Dynamic values displayed through Twig use normal escaped output.
+
+Untrusted submitted values are not intentionally rendered as raw HTML on the public website.
+
+This reduces the risk of submitted content being interpreted as executable markup when displayed through normal Twig output.
+
+### Secrets and Credentials
+
+Real database credentials, administrator passwords, API keys, and other sensitive environment information are not stored in the public source code or README.
+
+Environment-specific credentials remain in the local environment configuration and are not intended to be committed to the repository.
+
+### Public and Backend Access Separation
+
+Submitting the public Contact form only creates a Contact Message record after the request passes the required checks.
+
+A public Contact submission does not:
+
+- Create a backend administrator.
+- Authenticate the visitor into the backend.
+- Create a backend session.
+- Assign a backend role.
+- Grant backend permissions.
+
+Public Contact functionality and backend administration therefore remain separate.
+
+### Restricted Backend Access
+
+Backend management sections use registered October CMS permissions.
+
+Users without the required permission cannot access the corresponding restricted management section.
+
+Permission checks are applied both to navigation visibility and backend controller access.
+
+This means hiding a menu item is not the only protection. Unauthorized users are also prevented from directly accessing restricted management URLs.
+
+## Database Updates
+
+Task 23 introduces a database migration for Contact Messages.
+
+The Contact Messages table is created through the October CMS plugin update mechanism.
+
+The Task 23 plugin update includes:
+
+```text
+v1.0.5
+Create contact messages table
+```
+
+After pulling or cloning the updated project, the database and plugin updates can be applied using:
+
+```bash
+php artisan october:migrate
+```
+
+No manual creation of the Contact Messages table is required.
+
+The same migration command can be used by another developer after configuring the local environment and database connection.
+
+## Contact Management Flow
+
+The complete Contact management flow is:
+
+```text
+October CMS Backend
+        ↓
+Contact Settings
+        ↓
+Public Contact Page
+        ↓
+Contact Form
+        ↓
+October CMS AJAX Handler
+        ↓
+Honeypot Anti-Spam Check
+        ↓
+Server-Side Validation
+        ↓
+ContactMessage Model
+        ↓
+Database
+        ↓
+Backend Contact Messages
+        ↓
+New / Read Management
+```
+
+This flow keeps configuration, public submission, validation, storage, and administrative management integrated through October CMS.
+
+## Task 23 End-to-End Verification
+
+Task 23 was verified through the complete Contact management flow:
+
+1. Contact information was configured through the October CMS backend Contact Settings.
+
+2. The configured Contact information was confirmed on the public `/contact` page.
+
+3. The Contact form was submitted with invalid and missing data, and validation feedback was verified.
+
+4. Invalid requests were confirmed not to create Contact Message records.
+
+5. A valid Contact Message was submitted using the October CMS AJAX framework.
+
+6. Success feedback was displayed after the valid submission.
+
+7. The valid Contact Message was confirmed in the database.
+
+8. The submitted Contact Message appeared in the October CMS backend Contact Messages list.
+
+9. The message was opened and its details were verified.
+
+10. The message status was changed from `New` to `Read` and the updated status was confirmed.
+
+11. Backend navigation was verified to provide organized access to Services, Categories, and Contact Messages.
+
+12. Backend navigation visibility was tested with different permissions.
+
+13. A backend user without the Contact Messages permission was confirmed not to have access to the restricted Contact Messages management section.
+
+14. The public Contact page was tested on a mobile-sized viewport and remained usable and responsive.
+
+15. The honeypot anti-spam mechanism was tested using a simulated bot submission.
+
+16. The Contact Message database record count remained unchanged after the simulated spam submission, confirming that the spam message was not stored.
+
+17. Contact Settings were changed through the backend and the updated values were confirmed dynamically on the public Contact page.
+
+## Why Permissions Matter in a CMS
+
+Permissions are important in a CMS because different backend users can have different responsibilities.
+
+For example, a user responsible for managing Categories does not necessarily need access to Contact Messages or Service management.
+
+Using separate permissions follows the principle of giving users only the access required for their responsibilities.
+
+It also protects administrative functionality from users who should not be able to view or modify particular types of data.
+
+For this project, permissions control both the visibility of backend navigation items and access to the corresponding backend management sections.
+
+## Why Server-Side Validation Matters
+
+Server-side validation is essential because client-side validation cannot be treated as a security boundary.
+
+A visitor can bypass browser validation, modify a request, or submit data without using the normal website form.
+
+For this reason, the Contact form validates submitted data on the server before creating a `ContactMessage` record.
+
+Only data that passes the required validation rules is stored in the database.
+
+Combining server-side validation with backend permissions and basic anti-spam protection provides a safer and more reliable Contact management flow for the CMS.
