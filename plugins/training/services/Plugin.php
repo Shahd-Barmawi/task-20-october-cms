@@ -104,6 +104,21 @@ class Plugin extends PluginBase
         ];
     }
 
+    public function registerSettings()
+    {
+        return [
+            'contact_settings' => [
+                'label' => 'Contact Settings',
+                'description' => 'Manage website contact information.',
+                'category' => 'Services',
+                'icon' => 'icon-envelope',
+                'class' => \Training\Services\Models\ContactSettings::class,
+                'order' => 500,
+                'keywords' => 'contact email phone address help',
+            ],
+        ];
+    }
+
     public function registerComponents()
     {
         return [
