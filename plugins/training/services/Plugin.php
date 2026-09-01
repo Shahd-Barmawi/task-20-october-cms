@@ -3,6 +3,7 @@
 namespace Training\Services;
 
 use Backend;
+use BackendAuth;
 use System\Classes\PluginBase;
 
 class Plugin extends PluginBase
@@ -17,14 +18,67 @@ class Plugin extends PluginBase
         ];
     }
 
+    public function registerPermissions()
+    {
+        return [
+            'training.services.manage_services' => [
+                'tab' => 'Services',
+                'label' => 'Manage Services',
+            ],
+
+            'training.services.manage_categories' => [
+                'tab' => 'Services',
+                'label' => 'Manage Service Categories',
+            ],
+
+            'training.services.manage_contact_messages' => [
+                'tab' => 'Services',
+                'label' => 'Manage Contact Messages',
+            ],
+        ];
+    }
+
     public function registerNavigation()
     {
+        $user = BackendAuth::getUser();
+
+        if (!$user) {
+            return [];
+        }
+
+        $canManageServices = $user->hasAccess(
+            'training.services.manage_services'
+        );
+
+        $canManageCategories = $user->hasAccess(
+            'training.services.manage_categories'
+        );
+
+        $canManageContactMessages = $user->hasAccess(
+            'training.services.manage_contact_messages'
+        );
+
+        if (
+            !$canManageServices &&
+            !$canManageCategories &&
+            !$canManageContactMessages
+        ) {
+            return [];
+        }
+
+        if ($canManageServices) {
+            $mainUrl = Backend::url('training/services/services');
+        } elseif ($canManageCategories) {
+            $mainUrl = Backend::url('training/services/categories');
+        } else {
+            $mainUrl = Backend::url('training/services/contactmessages');
+        }
+
         return [
             'services' => [
                 'label' => 'Services',
-                'url' => Backend::url('training/services/services'),
+                'url' => $mainUrl,
                 'icon' => 'icon-briefcase',
-                'permissions' => [],
                 'order' => 500,
 
                 'sideMenu' => [
@@ -32,12 +86,18 @@ class Plugin extends PluginBase
                         'label' => 'Services',
                         'url' => Backend::url('training/services/services'),
                         'icon' => 'icon-list',
+                        'permissions' => [
+                            'training.services.manage_services',
+                        ],
                     ],
 
                     'categories' => [
                         'label' => 'Categories',
                         'url' => Backend::url('training/services/categories'),
                         'icon' => 'icon-folder',
+                        'permissions' => [
+                            'training.services.manage_categories',
+                        ],
                     ],
                 ],
             ],

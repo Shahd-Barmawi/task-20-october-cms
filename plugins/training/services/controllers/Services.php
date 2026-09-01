@@ -28,7 +28,9 @@ class Services extends Controller
     /**
      * @var array required permissions
      */
-    public $requiredPermissions = ['training.services.services'];
+    public $requiredPermissions = [
+        'training.services.manage_services',
+    ];
 
     /**
      * __construct the controller
