@@ -1162,3 +1162,355 @@ For this reason, the Contact form validates submitted data on the server before 
 Only data that passes the required validation rules is stored in the database.
 
 Combining server-side validation with backend permissions and basic anti-spam protection provides a safer and more reliable Contact management flow for the CMS.
+
+---
+
+# Task 24 – October CMS Dynamic Page Builder & Reusable Content Sections
+
+## Dynamic Page Builder
+
+The project includes a dynamic Page Builder that allows backend administrators to create and manage public website pages without hardcoding each page directly into the theme.
+
+### Dynamic Page Model
+
+Dynamic pages are represented by the `Page` model:
+
+```text
+Training\Services\Models\Page
+```
+
+The model uses the following database table:
+
+```text
+training_services_pages
+```
+
+Each page contains the following main fields:
+
+- `title` — Required page title.
+- `slug` — Required unique slug used to generate the public URL.
+- `status` — Controls whether the page is `draft` or `published`.
+- `seo_title` — Optional SEO-specific page title.
+- `seo_description` — Optional SEO meta description.
+- `created_at` and `updated_at` — Standard timestamps.
+
+A Page can contain multiple Page Sections through the relationship between the `Page` and `PageSection` models.
+
+---
+
+### Page Builder and Content Block Approach
+
+Instead of allowing administrators to enter unrestricted HTML for an entire page, the Page Builder uses reusable structured content blocks called Page Sections.
+
+Each Page Section belongs to a Page and contains:
+
+- `page_id` — The parent dynamic page.
+- `section_type` — Determines which reusable section layout is used.
+- `content` — Structured JSON content for the section.
+- `display_order` — Determines the order of sections on the public page.
+- `is_active` — Controls whether the section is rendered publicly.
+
+The Page Section model uses the following database table:
+
+```text
+training_services_page_sections
+```
+
+Administrators can create multiple sections for a page, edit their content, control their display order, enable or disable individual sections, and delete sections from the backend.
+
+---
+
+### Supported Section Types
+
+The Page Builder currently supports four approved section types:
+
+#### Hero / Banner
+
+Used for the main introductory area of a page.
+
+Supported content includes:
+
+- Title / heading.
+- Subtitle.
+- Optional image.
+- Optional button label.
+- Optional button URL.
+
+#### Text Content
+
+Used for standard text-based content.
+
+Supported content includes:
+
+- Title / heading.
+- Body content.
+
+#### Image + Text
+
+Used for content that combines text with an optional image.
+
+Supported content includes:
+
+- Title / heading.
+- Body content.
+- Optional image.
+- Image position (`left` or `right`).
+
+#### Call to Action
+
+Used to encourage the visitor to perform an action.
+
+Supported content includes:
+
+- Title / heading.
+- CTA text.
+- Optional button label.
+- Optional button URL.
+
+The backend form dynamically displays the appropriate fields according to the selected section type.
+
+---
+
+### Section Data and Theme Partials
+
+Each supported section type is rendered through a reusable theme partial.
+
+The current mapping is:
+
+| Section Type | Theme Partial                  |
+| ------------ | ------------------------------ |
+| `hero`       | `page-sections/hero.htm`       |
+| `text`       | `page-sections/text.htm`       |
+| `image_text` | `page-sections/image-text.htm` |
+| `cta`        | `page-sections/cta.htm`        |
+
+The partials are located under:
+
+```text
+themes/training-theme/partials/page-sections/
+```
+
+The public dynamic page loads the Page Sections from the database, orders them using `display_order`, and selects the appropriate partial according to the value of `section_type`.
+
+This keeps presentation logic inside the theme while the content remains managed through the backend and database.
+
+---
+
+### Public Dynamic Route
+
+Published dynamic pages are available through the following public route:
+
+```text
+/pages/:slug
+```
+
+For example:
+
+```text
+/pages/about-training
+/pages/career-development
+```
+
+The dynamic CMS page is located at:
+
+```text
+themes/training-theme/pages/dynamic-page.htm
+```
+
+The requested slug is used to retrieve the corresponding Page from the database.
+
+Only active sections are loaded, and they are rendered in ascending `display_order`.
+
+---
+
+### Publishing Behavior
+
+Dynamic pages support the following statuses:
+
+```text
+draft
+published
+```
+
+Only pages with the `published` status are publicly accessible.
+
+A draft page does not render as a normal public page. If a visitor requests a draft page or provides an unknown slug, the dynamic route returns a clear Page Not Found state with an HTTP 404 status.
+
+Individual Page Sections can also be enabled or disabled using the `is_active` field.
+
+Only active sections are rendered on the public page.
+
+---
+
+### SEO Metadata
+
+Each dynamic Page supports:
+
+- `seo_title`
+- `seo_description`
+
+When a published dynamic page is rendered, the SEO title is used as the HTML page title.
+
+If `seo_title` is empty, the normal Page `title` is used as a fallback.
+
+The SEO description is used to populate the public page meta description when provided.
+
+Example:
+
+```html
+<title>About Our Training Program</title>
+
+<meta
+    name="description"
+    content="Learn more about our professional training program and services."
+/>
+```
+
+This allows SEO information to be managed directly from the backend without hardcoding metadata into individual theme pages.
+
+---
+
+### Page Management Permission
+
+Dynamic Page management uses the following backend permission:
+
+```text
+training.services.manage_pages
+```
+
+The permission is registered by the Services plugin and is used by the Pages backend controller.
+
+This allows Page management access to be assigned through October CMS backend roles and permissions instead of automatically allowing every backend user to manage dynamic pages.
+
+---
+
+### Validation and Data Integrity
+
+Validation is applied to both Pages and Page Sections to prevent invalid records from being saved where practical.
+
+Page validation includes:
+
+- Required page title.
+- Required slug.
+- Unique slug.
+- Valid `draft` or `published` status.
+- Maximum lengths for SEO fields.
+
+Page Section validation includes:
+
+- Required valid section type.
+- Valid integer display order.
+- Display order cannot be negative.
+- Required important content according to section type.
+- Valid image position for Image + Text sections.
+- Safe optional image handling.
+- Optional buttons require consistent button label and URL values.
+- Button URLs accept valid internal site paths or HTTP/HTTPS URLs.
+
+For example, unsafe URL values such as JavaScript URLs are rejected by validation.
+
+---
+
+### Database Migrations and Plugin Updates
+
+The dynamic Page Builder database structure is managed through October CMS plugin migrations.
+
+The Page migration creates:
+
+```text
+training_services_pages
+```
+
+The Page Section migration creates:
+
+```text
+training_services_page_sections
+```
+
+After adding or modifying plugin migrations, the database can be updated using:
+
+```bash
+php artisan october:migrate
+```
+
+The Services plugin version history should include the migrations for the dynamic Page and Page Section entities so October CMS can apply the required database changes.
+
+---
+
+### Dynamic Navigation Integration
+
+The existing website navigation includes a link to a dynamic page.
+
+For example, the `Training` navigation item links to:
+
+```text
+/pages/about-training
+```
+
+The navigation contains only the link to the dynamic page. The complete page content is not hardcoded into the navigation.
+
+The actual page content continues to come from the Page and Page Section records managed through the backend.
+
+---
+
+### Sample Dynamic Pages
+
+The Page Builder was tested by creating multiple pages with different section compositions.
+
+#### About Our Training
+
+Section composition:
+
+```text
+Hero
+Text
+Call to Action
+```
+
+Public route:
+
+```text
+/pages/about-training
+```
+
+#### Career Development
+
+Section composition:
+
+```text
+Hero
+Image + Text
+Text
+Call to Action
+```
+
+Public route:
+
+```text
+/pages/career-development
+```
+
+These pages demonstrate that the same reusable section library can generate different page structures and content compositions without creating a separate hardcoded theme page for each layout.
+
+---
+
+### Why Reusable Section Types Are Used
+
+Reusable section types provide a safer and more maintainable approach than allowing unrestricted HTML editing inside a managed CMS.
+
+With unrestricted HTML, backend users could accidentally introduce broken markup, inconsistent layouts, unsafe links, or styling that does not follow the website design system.
+
+The reusable section approach separates content from presentation. Administrators manage structured content through clearly defined backend fields, while the theme controls the final HTML and styling through approved partials.
+
+This approach provides several benefits:
+
+- Consistent design across dynamic pages.
+- Reusable layouts and components.
+- Easier validation of content.
+- Safer handling of URLs and optional media.
+- Less risk of broken HTML.
+- Easier responsive design maintenance.
+- Clear separation between content management and presentation.
+- New page layouts can be created by combining existing section types instead of duplicating page templates.
+
+The result is a controlled Page Builder that gives backend administrators flexibility while preserving the structure, security, and visual consistency of the website.
