@@ -34,4 +34,15 @@ class Page extends Model
         'seo_title' => 'nullable|max:255',
         'seo_description' => 'nullable|max:500',
     ];
+
+    /**
+     * A dynamic page can contain multiple content sections.
+     */
+    public $hasMany = [
+        'sections' => [
+            \Training\Services\Models\PageSection::class,
+            'key' => 'page_id',
+            'order' => 'display_order asc',
+        ],
+    ];
 }

@@ -21,3 +21,7 @@ v1.0.5:
 v1.0.6:
     - Create dynamic pages table
     - create_pages_table.php
+
+v1.0.7:
+    - Create page sections table
+    - create_page_sections_table.php
