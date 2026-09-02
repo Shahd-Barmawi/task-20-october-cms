@@ -1,0 +1,20 @@
+name: Dynamic Page
+
+form: $/training/services/models/page/fields.yaml
+
+modelClass: Training\Services\Models\Page
+
+defaultRedirect: training/services/pages
+
+create:
+    title: Create Dynamic Page
+    redirect: training/services/pages/update/:id
+    redirectClose: training/services/pages
+
+update:
+    title: Edit Dynamic Page
+    redirect: training/services/pages
+    redirectClose: training/services/pages
+
+preview:
+    title: View Dynamic Page

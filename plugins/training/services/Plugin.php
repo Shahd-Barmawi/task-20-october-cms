@@ -35,6 +35,11 @@ class Plugin extends PluginBase
                 'tab' => 'Services',
                 'label' => 'Manage Contact Messages',
             ],
+
+            'training.services.manage_pages' => [
+                'tab' => 'Services',
+                'label' => 'Manage Dynamic Pages',
+            ],
         ];
     }
 
@@ -58,20 +63,35 @@ class Plugin extends PluginBase
             'training.services.manage_contact_messages'
         );
 
+        $canManagePages = $user->hasAccess(
+            'training.services.manage_pages'
+        );
+
         if (
             !$canManageServices &&
             !$canManageCategories &&
-            !$canManageContactMessages
+            !$canManageContactMessages &&
+            !$canManagePages
         ) {
             return [];
         }
 
         if ($canManageServices) {
-            $mainUrl = Backend::url('training/services/services');
+            $mainUrl = Backend::url(
+                'training/services/services'
+            );
         } elseif ($canManageCategories) {
-            $mainUrl = Backend::url('training/services/categories');
+            $mainUrl = Backend::url(
+                'training/services/categories'
+            );
+        } elseif ($canManageContactMessages) {
+            $mainUrl = Backend::url(
+                'training/services/contactmessages'
+            );
         } else {
-            $mainUrl = Backend::url('training/services/contactmessages');
+            $mainUrl = Backend::url(
+                'training/services/pages'
+            );
         }
 
         return [
@@ -117,6 +137,18 @@ class Plugin extends PluginBase
                         ],
                         'order' => 300,
                     ],
+
+                    'pages' => [
+                        'label' => 'Dynamic Pages',
+                        'url' => Backend::url(
+                            'training/services/pages'
+                        ),
+                        'icon' => 'icon-file-text-o',
+                        'permissions' => [
+                            'training.services.manage_pages',
+                        ],
+                        'order' => 400,
+                    ],
                 ],
             ],
         ];
@@ -141,13 +173,13 @@ class Plugin extends PluginBase
     {
         return [
             \Training\Services\Components\ServicesList::class
-                => 'servicesList',
+            => 'servicesList',
 
             \Training\Services\Components\ServiceDetails::class
-                => 'serviceDetails',
+            => 'serviceDetails',
 
             \Training\Services\Components\ContactForm::class
-                => 'contactForm',
+            => 'contactForm',
         ];
     }
 }

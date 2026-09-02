@@ -1,8 +1,34 @@
-# ===================================
-#  Form Field Definitions
-# ===================================
-
 fields:
-    id:
-        label: ID
-        disabled: true
+    title:
+        label: Page Title
+        type: text
+        span: left
+        required: true
+
+    slug:
+        label: Slug
+        type: text
+        span: right
+        required: true
+        comment: Used to generate the public page URL.
+
+    status:
+        label: Status
+        type: dropdown
+        options:
+            draft: Draft
+            published: Published
+        default: draft
+        span: left
+        required: true
+
+    seo_title:
+        label: SEO Title
+        type: text
+        span: right
+
+    seo_description:
+        label: SEO Description
+        type: textarea
+        size: small
+        span: full

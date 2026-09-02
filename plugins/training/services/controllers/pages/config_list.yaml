@@ -1,0 +1,29 @@
+list: $/training/services/models/page/columns.yaml
+
+modelClass: Training\Services\Models\Page
+
+title: Dynamic Pages
+
+recordUrl: training/services/pages/update/:id
+
+noRecordsMessage: No dynamic pages found.
+
+recordsPerPage: 20
+
+showPageNumbers: true
+
+showSetup: true
+
+showSorting: true
+
+showCheckboxes: true
+
+defaultSort:
+    column: updated_at
+    direction: desc
+
+toolbar:
+    buttons: list_toolbar
+
+    search:
+        prompt: Search dynamic pages...

@@ -1,8 +1,16 @@
-# ===================================
-#  List Column Definitions
-# ===================================
-
 columns:
-    id:
-        label: ID
+    title:
+        label: Title
         searchable: true
+
+    slug:
+        label: Slug
+        searchable: true
+
+    status:
+        label: Status
+        type: text
+
+    updated_at:
+        label: Updated At
+        type: datetime
