@@ -1,0 +1,37 @@
+<section class="builder-section builder-image-text">
+    <div class="container">
+
+        <div
+            class="builder-image-text-layout
+            {% if section.content.image_position == 'right' %}
+                image-right
+            {% else %}
+                image-left
+            {% endif %}"
+        >
+
+            {% if section.content.image %}
+                <div class="builder-image-text-image">
+                    <img
+                        src="{{ section.content.image|media }}"
+                        alt="{{ section.content.title|default('Section image') }}"
+                    >
+                </div>
+            {% endif %}
+
+            <div class="builder-image-text-content">
+
+                {% if section.content.title %}
+                    <h2>{{ section.content.title }}</h2>
+                {% endif %}
+
+                {% if section.content.body %}
+                    <p>{{ section.content.body }}</p>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+</section>

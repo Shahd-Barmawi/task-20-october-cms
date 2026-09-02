@@ -1,0 +1,26 @@
+<section class="builder-section builder-cta">
+    <div class="container">
+
+        <div class="builder-cta-content">
+
+            {% if section.content.title %}
+                <h2>{{ section.content.title }}</h2>
+            {% endif %}
+
+            {% if section.content.text %}
+                <p>{{ section.content.text }}</p>
+            {% endif %}
+
+            {% if section.content.button_label and section.content.button_url %}
+                <a
+                    href="{{ section.content.button_url }}"
+                    class="builder-button"
+                >
+                    {{ section.content.button_label }}
+                </a>
+            {% endif %}
+
+        </div>
+
+    </div>
+</section>

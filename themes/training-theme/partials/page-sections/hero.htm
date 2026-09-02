@@ -1,0 +1,37 @@
+<section class="builder-section builder-hero">
+    <div class="container">
+
+        <div class="builder-hero-content">
+
+            {% if section.content.title %}
+                <h1>{{ section.content.title }}</h1>
+            {% endif %}
+
+            {% if section.content.subtitle %}
+                <p class="builder-hero-subtitle">
+                    {{ section.content.subtitle }}
+                </p>
+            {% endif %}
+
+            {% if section.content.button_label and section.content.button_url %}
+                <a
+                    href="{{ section.content.button_url }}"
+                    class="builder-button"
+                >
+                    {{ section.content.button_label }}
+                </a>
+            {% endif %}
+
+        </div>
+
+        {% if section.content.image %}
+            <div class="builder-hero-image">
+                <img
+                    src="{{ section.content.image|media }}"
+                    alt="{{ section.content.title|default('Hero image') }}"
+                >
+            </div>
+        {% endif %}
+
+    </div>
+</section>

@@ -1,0 +1,15 @@
+<section class="builder-section builder-text">
+    <div class="container">
+
+        {% if section.content.title %}
+            <h2>{{ section.content.title }}</h2>
+        {% endif %}
+
+        {% if section.content.body %}
+            <div class="builder-text-content">
+                {{ section.content.body }}
+            </div>
+        {% endif %}
+
+    </div>
+</section>

@@ -1,0 +1,65 @@
+title = "Dynamic Page"
+url = "/pages/:slug"
+layout = "default"
+==
+use Training\Services\Models\Page;
+
+function onStart()
+{
+    $slug = $this->param('slug');
+
+    $pageModel = Page::where('slug', $slug)
+        ->where('status', 'published')
+        ->first();
+
+    if (!$pageModel) {
+        $this['dynamicPage'] = null;
+        $this->setStatusCode(404);
+        return;
+    }
+
+    $sections = $pageModel->sections()
+        ->where('is_active', true)
+        ->orderBy('display_order', 'asc')
+        ->get();
+
+    $this['dynamicPage'] = $pageModel;
+    $this['sections'] = $sections;
+
+    $this->page->title =
+        $pageModel->seo_title ?: $pageModel->title;
+
+    $this->page->meta_description =
+        $pageModel->seo_description;
+}
+==
+{% if dynamicPage %}
+
+    {% for section in sections %}
+
+        {% if section.section_type == 'hero' %}
+            {% partial 'page-sections/hero' section=section %}
+
+        {% elseif section.section_type == 'text' %}
+            {% partial 'page-sections/text' section=section %}
+
+        {% elseif section.section_type == 'image_text' %}
+            {% partial 'page-sections/image-text' section=section %}
+
+        {% elseif section.section_type == 'cta' %}
+            {% partial 'page-sections/cta' section=section %}
+
+        {% endif %}
+
+    {% endfor %}
+
+{% else %}
+
+    <section class="page-section">
+        <div class="container">
+            <h1>Page Not Found</h1>
+            <p>The requested page is not available.</p>
+        </div>
+    </section>
+
+{% endif %}
