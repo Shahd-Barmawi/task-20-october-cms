@@ -25,6 +25,7 @@ class PageSection extends Model
     public $rules = [
         'page_id' => 'required|integer',
         'section_type' => 'required|in:hero,text,image_text,cta',
+        'content' => 'nullable|array',
         'display_order' => 'required|integer|min:0',
         'is_active' => 'boolean',
     ];
@@ -49,5 +50,12 @@ class PageSection extends Model
             self::TYPE_IMAGE_TEXT => 'Image + Text',
             self::TYPE_CTA => 'Call to Action',
         ];
+    }
+
+    public function scopeActiveOrdered($query)
+    {
+        return $query
+            ->where('is_active', true)
+            ->orderBy('display_order', 'asc');
     }
 }
