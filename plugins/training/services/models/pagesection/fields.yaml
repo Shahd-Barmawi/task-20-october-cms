@@ -1,8 +1,103 @@
-# ===================================
-#  Form Field Definitions
-# ===================================
-
 fields:
-    id:
-        label: ID
-        disabled: true
+    section_type:
+        label: Section Type
+        type: dropdown
+        options: getSectionTypeOptions
+        span: left
+        required: true
+        comment: Select the type of content section.
+
+    display_order:
+        label: Display Order
+        type: number
+        span: right
+        default: 0
+        required: true
+        comment: Lower numbers appear first.
+
+    is_active:
+        label: Active
+        type: switch
+        span: full
+        default: true
+        comment: Only active sections are displayed on the public page.
+
+    content[title]:
+        label: Title / Heading
+        type: text
+        span: full
+        trigger:
+            action: show
+            field: section_type
+            condition: value[hero][text][image_text][cta]
+
+    content[subtitle]:
+        label: Subtitle
+        type: text
+        span: full
+        trigger:
+            action: show
+            field: section_type
+            condition: value[hero]
+
+    content[body]:
+        label: Body Content
+        type: textarea
+        size: large
+        span: full
+        trigger:
+            action: show
+            field: section_type
+            condition: value[text][image_text]
+
+    content[text]:
+        label: CTA Text
+        type: textarea
+        size: small
+        span: full
+        trigger:
+            action: show
+            field: section_type
+            condition: value[cta]
+
+    content[image]:
+        label: Image
+        type: mediafinder
+        mode: image
+        span: left
+        trigger:
+            action: show
+            field: section_type
+            condition: value[hero][image_text]
+
+    content[image_position]:
+        label: Image Position
+        type: dropdown
+        options:
+            left: Left
+            right: Right
+        default: left
+        span: right
+        trigger:
+            action: show
+            field: section_type
+            condition: value[image_text]
+
+    content[button_label]:
+        label: Button Label
+        type: text
+        span: left
+        trigger:
+            action: show
+            field: section_type
+            condition: value[hero][cta]
+
+    content[button_url]:
+        label: Button URL
+        type: text
+        span: right
+        comment: "Example: /contact"
+        trigger:
+            action: show
+            field: section_type
+            condition: value[hero][cta]

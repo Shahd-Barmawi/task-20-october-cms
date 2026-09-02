@@ -1,0 +1,10 @@
+sections:
+    label: Sections
+    view:
+        list: $/training/services/models/pagesection/columns.yaml
+        toolbarButtons: create|delete
+        showSearch: false
+        recordsPerPage: 20
+
+    manage:
+        form: $/training/services/models/pagesection/fields.yaml

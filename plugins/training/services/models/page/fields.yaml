@@ -32,3 +32,8 @@ fields:
         type: textarea
         size: small
         span: full
+
+    sections:
+        label: Page Sections
+        type: relation
+        span: full
