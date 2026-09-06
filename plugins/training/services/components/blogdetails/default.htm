@@ -1,0 +1,40 @@
+<article class="blog-details">
+    <div class="container">
+        <a href="{{ 'blog'|page }}" class="blog-back-link">
+            ← Back to Blog
+        </a>
+
+        <header class="blog-details-header">
+            <div class="blog-details-meta">
+                <span class="blog-category">
+                    {{ post.category.name }}
+                </span>
+
+                <span>
+                    {{ post.published_at|date('M d, Y') }}
+                </span>
+            </div>
+
+            <h1>{{ post.title }}</h1>
+
+            {% if post.excerpt %}
+                <p class="blog-details-excerpt">
+                    {{ post.excerpt }}
+                </p>
+            {% endif %}
+        </header>
+
+        {% if post.featured_image %}
+            <div class="blog-details-image">
+                <img
+                    src="{{ post.featured_image.path }}"
+                    alt="{{ post.title }}"
+                >
+            </div>
+        {% endif %}
+
+        <div class="blog-details-content">
+            {{ post.body|raw }}
+        </div>
+    </div>
+</article>

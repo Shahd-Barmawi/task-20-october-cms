@@ -249,6 +249,9 @@ class Plugin extends PluginBase
 
             \Training\Services\Components\BlogList::class
             => 'blogList',
+
+            \Training\Services\Components\BlogDetails::class
+            => 'blogDetails',
         ];
     }
 }
