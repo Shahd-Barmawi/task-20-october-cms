@@ -36,5 +36,65 @@
         <div class="blog-details-content">
             {{ post.body|raw }}
         </div>
+
+        {% if relatedPosts|length %}
+            <section class="related-posts">
+                <div class="related-posts-header">
+                    <span class="section-label">Keep Reading</span>
+                    <h2>Related Posts</h2>
+                </div>
+
+                <div class="related-posts-grid">
+                    {% for related in relatedPosts %}
+                        <article class="related-post-card">
+                            {% if related.featured_image %}
+                                <a
+                                    href="{{ 'blog-details'|page({ slug: related.slug }) }}"
+                                    class="related-post-image"
+                                >
+                                    <img
+                                        src="{{ related.featured_image.path }}"
+                                        alt="{{ related.title }}"
+                                    >
+                                </a>
+                            {% else %}
+                                <a
+                                    href="{{ 'blog-details'|page({ slug: related.slug }) }}"
+                                    class="related-post-image related-post-placeholder"
+                                >
+                                    Blog
+                                </a>
+                            {% endif %}
+
+                            <div class="related-post-content">
+                                <div class="related-post-meta">
+                                    <span>{{ related.category.name }}</span>
+                                    <span>
+                                        {{ related.published_at|date('M d, Y') }}
+                                    </span>
+                                </div>
+
+                                <h3>
+                                    <a href="{{ 'blog-details'|page({ slug: related.slug }) }}">
+                                        {{ related.title }}
+                                    </a>
+                                </h3>
+
+                                {% if related.excerpt %}
+                                    <p>{{ related.excerpt }}</p>
+                                {% endif %}
+
+                                <a
+                                    href="{{ 'blog-details'|page({ slug: related.slug }) }}"
+                                    class="related-read-more"
+                                >
+                                    Read Article →
+                                </a>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
     </div>
 </article>

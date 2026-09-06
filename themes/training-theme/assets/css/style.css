@@ -2057,4 +2057,134 @@ main {
     }
 }
 
+.related-posts {
+    margin-top: 48px;
+}
+
+.related-posts-header {
+    margin-bottom: 24px;
+}
+
+.related-posts-header .section-label {
+    margin-bottom: 6px;
+}
+
+.related-posts-header h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 28px;
+    line-height: 1.25;
+}
+
+.related-posts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.related-post-card {
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.related-post-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.09);
+}
+
+.related-post-image {
+    display: block;
+    width: 100%;
+    height: 160px;
+    overflow: hidden;
+    background: #e2e8f0;
+}
+
+.related-post-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.related-post-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #dbeafe, #e0e7ff);
+    color: #1e3a8a;
+    font-size: 20px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.related-post-content {
+    padding: 18px;
+}
+
+.related-post-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 12px;
+    color: #64748b;
+    font-size: 11px;
+}
+
+.related-post-content h3 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    line-height: 1.35;
+}
+
+.related-post-content h3 a {
+    color: #0f172a;
+    text-decoration: none;
+}
+
+.related-post-content h3 a:hover {
+    color: #2563eb;
+}
+
+.related-post-content p {
+    margin: 0 0 14px;
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.65;
+}
+
+.related-read-more {
+    color: #2563eb;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.related-read-more:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .related-posts {
+        margin-top: 36px;
+    }
+
+    .related-posts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .related-posts-header h2 {
+        font-size: 24px;
+    }
+
+    .related-post-image {
+        height: 200px;
+    }
+}
+
 /* End of Blog Section */
