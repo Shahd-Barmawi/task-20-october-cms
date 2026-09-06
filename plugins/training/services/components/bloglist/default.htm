@@ -11,12 +11,38 @@
             </div>
         </div>
 
+        <form method="get" action="{{ this.page.baseFileName|page }}" class="blog-search-form">
+            <div class="blog-search-box">
+                <input
+                    type="text"
+                    name="q"
+                    value="{{ blogSearch }}"
+                    placeholder="Search blog posts..."
+                    aria-label="Search blog posts"
+                >
+
+                <button type="submit">
+                    Search
+                </button>
+            </div>
+        </form>
+
+        {% if blogSearch %}
+            <div class="blog-search-summary">
+                Search results for:
+                <strong>{{ blogSearch }}</strong>
+            </div>
+        {% endif %}
+
         {% if posts|length %}
             <div class="blog-grid">
                 {% for post in posts %}
                     <article class="blog-card">
                         {% if post.featured_image %}
-                            <a href="{{ 'blog-details'|page({ slug: post.slug }) }}" class="blog-card-image">
+                            <a
+                                href="{{ 'blog-details'|page({ slug: post.slug }) }}"
+                                class="blog-card-image"
+                            >
                                 <img
                                     src="{{ post.featured_image.path }}"
                                     alt="{{ post.title }}"
@@ -60,7 +86,7 @@
                 <nav class="blog-pagination" aria-label="Blog pagination">
                     {% if posts.currentPage > 1 %}
                         <a
-                            href="{{ this.page.baseFileName|page }}?page={{ posts.currentPage - 1 }}"
+                            href="{{ this.page.baseFileName|page }}?page={{ posts.currentPage - 1 }}{% if blogSearch %}&q={{ blogSearch|url_encode }}{% endif %}"
                             class="pagination-button"
                         >
                             Previous
@@ -74,7 +100,7 @@
                     <div class="pagination-pages">
                         {% for pageNumber in 1..posts.lastPage %}
                             <a
-                                href="{{ this.page.baseFileName|page }}?page={{ pageNumber }}"
+                                href="{{ this.page.baseFileName|page }}?page={{ pageNumber }}{% if blogSearch %}&q={{ blogSearch|url_encode }}{% endif %}"
                                 class="pagination-page {{ posts.currentPage == pageNumber ? 'active' : '' }}"
                             >
                                 {{ pageNumber }}
@@ -84,7 +110,7 @@
 
                     {% if posts.currentPage < posts.lastPage %}
                         <a
-                            href="{{ this.page.baseFileName|page }}?page={{ posts.currentPage + 1 }}"
+                            href="{{ this.page.baseFileName|page }}?page={{ posts.currentPage + 1 }}{% if blogSearch %}&q={{ blogSearch|url_encode }}{% endif %}"
                             class="pagination-button"
                         >
                             Next
@@ -98,8 +124,25 @@
             {% endif %}
         {% else %}
             <div class="blog-empty">
-                <h2>No blog posts found</h2>
-                <p>There are currently no published posts available.</p>
+                {% if blogSearch %}
+                    <h2>No results found</h2>
+                    <p>
+                        No blog posts matched
+                        "<strong>{{ blogSearch }}</strong>".
+                    </p>
+
+                    <a
+                        href="{{ this.page.baseFileName|page }}"
+                        class="blog-reset-link"
+                    >
+                        Clear Search
+                    </a>
+                {% else %}
+                    <h2>No blog posts found</h2>
+                    <p>
+                        There are currently no published posts available.
+                    </p>
+                {% endif %}
             </div>
         {% endif %}
     </div>
