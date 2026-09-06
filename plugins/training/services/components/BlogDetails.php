@@ -1,9 +1,7 @@
-<?php
-
-namespace Training\Services\Components;
+<?php namespace Training\Services\Components;
 
 use Cms\Classes\ComponentBase;
-use Cms\Classes\Page;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Training\Services\Models\BlogPost;
 
 class BlogDetails extends ComponentBase
@@ -47,7 +45,7 @@ class BlogDetails extends ComponentBase
             ->first();
 
         if (!$this->post) {
-            return Page::make('404');
+            throw new NotFoundHttpException();
         }
 
         $this->relatedPosts = BlogPost::with([
