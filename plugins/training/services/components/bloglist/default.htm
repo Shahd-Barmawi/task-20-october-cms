@@ -1,0 +1,65 @@
+<section class="blog-section">
+    <div class="container">
+        <div class="blog-header">
+            <div>
+                <span class="section-label">Latest Updates</span>
+                <h1>Blog & News</h1>
+                <p>
+                    Explore our latest articles, development insights,
+                    and career resources.
+                </p>
+            </div>
+        </div>
+
+        {% if posts|length %}
+            <div class="blog-grid">
+                {% for post in posts %}
+                    <article class="blog-card">
+                        {% if post.featured_image %}
+                            <a href="{{ 'blog-details'|page({ slug: post.slug }) }}" class="blog-card-image">
+                                <img
+                                    src="{{ post.featured_image.path }}"
+                                    alt="{{ post.title }}"
+                                >
+                            </a>
+                        {% else %}
+                            <div class="blog-card-image blog-card-image-placeholder">
+                                <span>Blog</span>
+                            </div>
+                        {% endif %}
+
+                        <div class="blog-card-content">
+                            <div class="blog-card-meta">
+                                <span class="blog-category">
+                                    {{ post.category.name }}
+                                </span>
+
+                                <span>
+                                    {{ post.published_at|date('M d, Y') }}
+                                </span>
+                            </div>
+
+                            <h2>{{ post.title }}</h2>
+
+                            {% if post.excerpt %}
+                                <p>{{ post.excerpt }}</p>
+                            {% endif %}
+
+                            <a
+                                href="{{ 'blog-details'|page({ slug: post.slug }) }}"
+                                class="blog-read-more"
+                            >
+                                Read More
+                            </a>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="blog-empty">
+                <h2>No blog posts found</h2>
+                <p>There are currently no published posts available.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>

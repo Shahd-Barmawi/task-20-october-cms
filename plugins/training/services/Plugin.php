@@ -246,6 +246,9 @@ class Plugin extends PluginBase
 
             \Training\Services\Components\ContactForm::class
             => 'contactForm',
+
+            \Training\Services\Components\BlogList::class
+            => 'blogList',
         ];
     }
 }
