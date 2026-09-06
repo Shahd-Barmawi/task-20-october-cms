@@ -55,6 +55,47 @@
                     </article>
                 {% endfor %}
             </div>
+
+            {% if posts.lastPage > 1 %}
+                <nav class="blog-pagination" aria-label="Blog pagination">
+                    {% if posts.currentPage > 1 %}
+                        <a
+                            href="{{ this.page.baseFileName|page }}?page={{ posts.currentPage - 1 }}"
+                            class="pagination-button"
+                        >
+                            Previous
+                        </a>
+                    {% else %}
+                        <span class="pagination-button disabled">
+                            Previous
+                        </span>
+                    {% endif %}
+
+                    <div class="pagination-pages">
+                        {% for pageNumber in 1..posts.lastPage %}
+                            <a
+                                href="{{ this.page.baseFileName|page }}?page={{ pageNumber }}"
+                                class="pagination-page {{ posts.currentPage == pageNumber ? 'active' : '' }}"
+                            >
+                                {{ pageNumber }}
+                            </a>
+                        {% endfor %}
+                    </div>
+
+                    {% if posts.currentPage < posts.lastPage %}
+                        <a
+                            href="{{ this.page.baseFileName|page }}?page={{ posts.currentPage + 1 }}"
+                            class="pagination-button"
+                        >
+                            Next
+                        </a>
+                    {% else %}
+                        <span class="pagination-button disabled">
+                            Next
+                        </span>
+                    {% endif %}
+                </nav>
+            {% endif %}
         {% else %}
             <div class="blog-empty">
                 <h2>No blog posts found</h2>
