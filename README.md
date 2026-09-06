@@ -1514,3 +1514,724 @@ This approach provides several benefits:
 - New page layouts can be created by combining existing section types instead of duplicating page templates.
 
 The result is a controlled Page Builder that gives backend administrators flexibility while preserving the structure, security, and visual consistency of the website.
+
+---
+
+# Task 25 – October CMS Blog Module, Search, Filtering & Pagination
+
+## Overview
+
+Task 25 extends the existing October CMS training project from Tasks 20–24 by adding a complete Blog/News content module.
+
+The Blog module provides structured content management through the October CMS backend and a public Blog interface that supports publication controls, scheduled publishing, featured images, search, category filtering, database-backed pagination, Blog Details pages, Related Posts, SEO metadata, backend permissions, and responsive design.
+
+All functionality from the previous tasks remains available and continues to work alongside the new Blog module.
+
+---
+
+## Features Implemented
+
+The following functionality was implemented as part of Task 25:
+
+- Blog Category management
+- Blog Post management
+- Unique category and post slugs
+- Draft and Published post statuses
+- Scheduled publication using publication date and time
+- Featured image support
+- Backend Blog permissions
+- Backend Blog navigation
+- Public Blog listing
+- Search functionality
+- Category filtering
+- Combined search and category filtering
+- Database-backed pagination
+- Blog Details pages using slugs
+- Related Posts
+- Dynamic SEO metadata
+- Responsive desktop and mobile design
+- Public protection for Draft, future-scheduled, and unavailable posts
+
+---
+
+## Blog Categories
+
+A Blog Category entity was added to organize Blog Posts.
+
+Each Blog Category contains:
+
+- Name
+- Slug
+- Status
+- Display order
+- Created timestamp
+- Updated timestamp
+
+Category slugs are unique.
+
+Categories can be managed from the October CMS backend through the Blog Categories section.
+
+Backend users with the required permission can:
+
+- View Blog Categories
+- Create Blog Categories
+- Edit Blog Categories
+- Delete Blog Categories
+
+Only active categories are used for public Blog content.
+
+Three Blog Categories were created for testing:
+
+- Web Development
+- Frontend Development
+- Career Development
+
+---
+
+## Blog Posts
+
+A Blog Post entity was added for managing Blog/News content.
+
+Each Blog Post contains:
+
+- Title
+- Slug
+- Excerpt / summary
+- Main body content
+- Blog Category relationship
+- Featured image
+- Publication status
+- Published date and time
+- Created timestamp
+- Updated timestamp
+
+Each Blog Post belongs to a Blog Category.
+
+Blog Post slugs are unique and are used to generate the public Blog Details URLs.
+
+The October CMS backend provides interfaces for:
+
+- Listing Blog Posts
+- Creating Blog Posts
+- Editing Blog Posts
+- Publishing Blog Posts
+- Keeping posts as Draft
+- Deleting Blog Posts
+- Searching Blog Posts
+- Filtering Blog Posts by publication status
+- Filtering Blog Posts by category
+
+---
+
+## Publication Rules
+
+Blog Posts support the following publication statuses:
+
+- Draft
+- Published
+
+A Blog Post is publicly available only when:
+
+1. Its status is `published`.
+2. Its `published_at` value is not in the future.
+3. It belongs to an active Blog Category.
+
+Draft posts are never displayed publicly.
+
+A post marked as Published but having a future publication date is treated as a scheduled post and remains hidden until its publication time is reached.
+
+The publication rules are applied consistently to:
+
+- Blog listing
+- Search results
+- Category filtering
+- Blog Details pages
+- Related Posts
+
+This prevents visitors from accessing Draft or future-scheduled content directly through its slug.
+
+---
+
+## Backend Blog Management
+
+The October CMS backend contains a dedicated Blog navigation section.
+
+The Blog section provides access to:
+
+- Blog Posts
+- Blog Categories
+
+The Blog Posts backend list includes practical information such as:
+
+- Title
+- Slug
+- Category
+- Status
+- Published At
+- Updated At
+
+Backend filters were also implemented for:
+
+- Publication Status
+- Category
+
+This allows Blog content to be managed efficiently from the October CMS administration area.
+
+---
+
+## Backend Permissions
+
+Dedicated permissions were added for Blog management.
+
+The permissions are:
+
+```text
+training.services.manage_blog_categories
+training.services.manage_blog_posts
+```
+
+The first permission controls access to Blog Category management.
+
+The second permission controls access to Blog Post management.
+
+The permissions are applied to the relevant backend controllers and navigation items.
+
+A restricted backend administrator without Blog permissions was tested.
+
+The restricted administrator could access the permitted Services functionality but received an `Access Denied` response when attempting to access Blog management.
+
+This confirms that Blog backend functionality is protected by the configured permissions.
+
+---
+
+## Blog List Component
+
+A reusable October CMS component named `BlogList` was implemented.
+
+The component is responsible for retrieving Blog Posts for the public Blog page.
+
+It loads eligible Published posts together with their:
+
+- Blog Category
+- Featured image
+- Title
+- Excerpt
+- Published date
+
+The component applies the publication rules before returning posts.
+
+Posts are ordered by publication date with the newest eligible posts displayed first.
+
+The component also handles:
+
+- Search
+- Category filtering
+- Combined search and filtering
+- Pagination
+- Active category loading
+
+---
+
+## Public Blog Page
+
+The public Blog page is available at:
+
+```text
+/blog
+```
+
+When running the project locally, it can be accessed at:
+
+```text
+http://127.0.0.1:8000/blog
+```
+
+The page displays eligible Blog Posts using responsive Blog cards.
+
+Each card includes:
+
+- Featured image
+- Category
+- Published date
+- Title
+- Excerpt
+- Read More button
+
+The Read More button opens the corresponding Blog Details page.
+
+---
+
+## Blog Search
+
+The Blog page includes database-backed search functionality.
+
+Visitors can search Blog content using the search field.
+
+Search checks the following Blog Post fields:
+
+- Title
+- Excerpt
+- Main body content
+
+For example, searching for:
+
+```text
+Laravel
+```
+
+returns matching eligible Blog Posts.
+
+Search results continue to respect the publication rules, so Draft and future-scheduled posts are not exposed through search.
+
+---
+
+## Empty Search and No Results
+
+An empty search displays the normal eligible Blog listing.
+
+If a visitor searches for a value that does not match any available Blog Post, the page displays a clear no-results state.
+
+The no-results interface informs the visitor that no Blog Posts matched the search and provides an option to clear the search.
+
+---
+
+## Category Filtering
+
+The Blog page provides category filtering using Blog Categories stored in the database.
+
+Only active categories are available in the public category filter.
+
+Visitors can select a category and display only Blog Posts belonging to that category.
+
+For example:
+
+```text
+Frontend Development
+```
+
+displays eligible posts belonging to the Frontend Development category.
+
+Category filtering also respects all publication rules.
+
+---
+
+## Combined Search and Category Filtering
+
+Search and category filtering can be used together.
+
+For example, a visitor can search for:
+
+```text
+Building
+```
+
+while selecting:
+
+```text
+Frontend Development
+```
+
+The result contains only eligible posts that satisfy both conditions.
+
+Search and category parameters are preserved correctly while filtering the Blog listing.
+
+---
+
+## Pagination
+
+The Blog listing uses database-backed pagination.
+
+The current Blog List component displays:
+
+```text
+3 posts per page
+```
+
+Pagination controls allow visitors to navigate between result pages.
+
+The interface provides controls such as:
+
+- Previous
+- Page numbers
+- Next
+
+Pagination continues to work while respecting the current Blog query, publication rules, search, and category filtering.
+
+---
+
+## Blog Details Component
+
+A reusable `BlogDetails` component was implemented for individual Blog Posts.
+
+The component loads a Blog Post using its unique slug.
+
+The Blog Details route follows this structure:
+
+```text
+/blog/:slug
+```
+
+Example:
+
+```text
+/blog/getting-started-web-development
+```
+
+The Blog Details page displays:
+
+- Blog Category
+- Published date
+- Blog Post title
+- Excerpt
+- Featured image
+- Main body content
+
+The page uses the existing Training CMS theme and responsive layout.
+
+---
+
+## Invalid and Unavailable Blog Posts
+
+The Blog Details component checks the publication rules before displaying a Blog Post.
+
+The following types of URLs are not publicly accessible:
+
+- Unknown Blog Post slugs
+- Draft Blog Posts
+- Future-scheduled Blog Posts
+- Posts that do not satisfy the public publication rules
+
+These requests return a Page Not Found response instead of exposing unavailable Blog content.
+
+For example:
+
+```text
+/blog/draft-blog-post
+```
+
+and:
+
+```text
+/blog/future-blog-post
+```
+
+are not publicly accessible while those posts remain unavailable.
+
+An unknown slug such as:
+
+```text
+/blog/this-post-does-not-exist
+```
+
+also returns Page Not Found.
+
+---
+
+## Related Posts
+
+The Blog Details page includes a Related Posts section.
+
+Related Posts are selected using the category of the currently displayed Blog Post.
+
+A related post must:
+
+- Belong to the same Blog Category
+- Be publicly eligible
+- Not be the current Blog Post
+
+Related Posts are ordered by publication date.
+
+A maximum of three Related Posts is retrieved.
+
+Each Related Post can display:
+
+- Featured image
+- Category
+- Published date
+- Title
+- Excerpt
+- Link to the article
+
+---
+
+## SEO Metadata
+
+Dynamic SEO metadata was implemented for Blog Details pages.
+
+The Blog Post title is used as the HTML page title.
+
+The Blog Post excerpt is used as the meta description.
+
+If the excerpt is unavailable, the Blog Post title is used as a fallback.
+
+The main theme layout outputs the dynamic metadata using:
+
+```html
+<title>{{ this.page.title }}</title>
+```
+
+and:
+
+```html
+{% if this.page.meta_description %}
+<meta name="description" content="{{ this.page.meta_description }}" />
+{% endif %}
+```
+
+This allows individual Blog Posts to provide meaningful page metadata.
+
+---
+
+## Featured Images
+
+Blog Posts support featured images through the October CMS file attachment system.
+
+Featured images are displayed on:
+
+- Public Blog cards
+- Blog Details pages
+- Related Posts
+
+The Blog interface also provides a fallback presentation when a Blog Post does not contain a featured image.
+
+---
+
+## Responsive Design
+
+The Blog module was integrated into the existing custom Training CMS theme.
+
+Responsive styling was implemented for both desktop and mobile devices.
+
+The responsive implementation includes:
+
+- Blog page headings
+- Search controls
+- Category selector
+- Apply and Clear buttons
+- Blog card grid
+- Blog card images
+- Blog titles
+- Blog excerpts
+- Pagination
+- Blog Details header
+- Featured images
+- Blog body content
+- Related Posts
+- Navigation
+- Content spacing
+
+On smaller screens, Blog content automatically adjusts to the available screen width and Blog cards are displayed in a mobile-friendly layout.
+
+---
+
+## Test Data
+
+The Blog module was tested with the required content.
+
+The test data includes:
+
+- 3 Blog Categories
+- 8 Blog Posts
+- Multiple Published posts
+- At least 1 Draft post
+- At least 1 future-scheduled post
+- Multiple Blog Categories
+- Featured images
+
+Example test posts include:
+
+- Getting Started with Web Development
+- Laravel Backend Development
+- Building Responsive Websites
+- Modern CSS Techniques
+- Starting Your Tech Career
+- Preparing for Developer Interviews
+- Draft Blog Post
+- Future Blog Post
+
+---
+
+## Testing and Verification
+
+The Blog module was tested to verify the required functionality.
+
+The following behavior was confirmed:
+
+- Blog Categories can be managed from the backend.
+- Blog Posts can be managed from the backend.
+- Backend Blog filters work correctly.
+- Published and eligible Blog Posts appear publicly.
+- Draft Blog Posts remain hidden.
+- Future-scheduled Blog Posts remain hidden.
+- Search works correctly.
+- Search checks Blog content stored in the database.
+- Empty search works correctly.
+- No-results search state works correctly.
+- Category filtering works correctly.
+- Search and category filtering work together.
+- Pagination works correctly.
+- Blog Details pages load using Blog Post slugs.
+- Featured images display correctly.
+- Related Posts are displayed.
+- Related Posts exclude the current Blog Post.
+- Unknown Blog Post slugs return Page Not Found.
+- Draft Blog Post URLs return Page Not Found.
+- Future-scheduled Blog Post URLs return Page Not Found.
+- Backend Blog permissions restrict unauthorized users.
+- Blog pages work on desktop screen sizes.
+- Blog pages adapt correctly to mobile screen sizes.
+- SEO title and meta description are generated dynamically.
+
+---
+
+## Main Files
+
+The main files used for the Task 25 Blog implementation include:
+
+```text
+plugins/training/services/models/BlogCategory.php
+plugins/training/services/models/BlogPost.php
+plugins/training/services/components/BlogList.php
+plugins/training/services/components/BlogDetails.php
+plugins/training/services/Plugin.php
+themes/training-theme/pages/blog.htm
+themes/training-theme/pages/blog-details.htm
+themes/training-theme/layouts/default.htm
+themes/training-theme/assets/css/style.css
+```
+
+Backend configuration files for Blog Categories and Blog Posts are also located inside the Training Services plugin.
+
+Database migration files are located under:
+
+```text
+plugins/training/services/updates/
+```
+
+---
+
+## Database Migration
+
+After cloning or pulling the project, install the required project dependencies and configure the environment as needed.
+
+Apply the October CMS database migrations using:
+
+```bash
+php artisan october:migrate
+```
+
+This creates or updates the database structures required by the Training Services plugin, including the Blog functionality.
+
+---
+
+## Running the Project
+
+Start the local October CMS development server using:
+
+```bash
+php artisan serve
+```
+
+The project can then be accessed at:
+
+```text
+http://127.0.0.1:8000
+```
+
+The Blog page is available at:
+
+```text
+http://127.0.0.1:8000/blog
+```
+
+---
+
+## Task 25 Screenshots
+
+Task 25 testing evidence includes screenshots for:
+
+- Blog Posts backend management
+- Blog Categories backend management
+- Public Blog listing
+- Search functionality
+- Category filtering
+- Pagination
+- Blog Details page
+- Related Posts
+- Draft / future content protection
+- Responsive mobile Blog interface
+- Backend permission restriction
+
+The screenshots demonstrate both backend content management and public Blog functionality.
+
+---
+
+## Challenges and Solutions
+
+### Publication Visibility
+
+The public Blog queries needed to distinguish between Published content that is currently available and Published content scheduled for the future.
+
+This was handled by applying publication rules to the Blog queries so that only posts whose publication date has been reached are publicly available.
+
+### Search and Category Filtering
+
+Search and category filtering needed to work independently and together.
+
+The Blog List component builds the database query dynamically based on the provided search term and selected category while continuing to apply the publication restrictions.
+
+### Backend Permissions
+
+Blog management needed to be unavailable to unauthorized backend administrators.
+
+Dedicated Blog permissions were added and applied to the backend controllers and navigation.
+
+Testing with a restricted administrator confirmed that unauthorized Blog access is denied.
+
+### Blog Details Protection
+
+Direct URLs could potentially be used to request Draft, future, or nonexistent Blog Posts.
+
+The Blog Details component validates the post against the public publication rules before rendering it. Invalid or unavailable posts return a Page Not Found response.
+
+### Responsive Interface
+
+The Blog listing and Blog Details interfaces needed to remain usable across desktop and mobile screen sizes.
+
+Responsive CSS was added to adjust the Blog grid, images, typography, filters, buttons, details content, and Related Posts according to the available screen width.
+
+---
+
+## Remaining Work
+
+No required Task 25 functionality is currently known to be incomplete.
+
+The implemented Blog module satisfies the required Blog management, publication control, public listing, search, filtering, pagination, Blog Details, Related Posts, SEO, permissions, testing, and responsive interface requirements.
+
+---
+
+## Task 25 Result
+
+Task 25 successfully extends the existing October CMS project with a complete Blog/News module while preserving the functionality implemented in Tasks 20–24.
+
+The completed module provides:
+
+- Structured Blog content management
+- Blog Categories
+- Blog Posts
+- Featured images
+- Publication controls
+- Scheduled publishing
+- Backend permissions
+- Public Blog listing
+- Search
+- Category filtering
+- Combined filtering
+- Database pagination
+- Blog Details pages
+- Related Posts
+- Dynamic SEO metadata
+- Protected unavailable content
+- Responsive desktop and mobile interfaces
+
+The result is a reusable and maintainable Blog/News system integrated into the existing Training CMS project.
