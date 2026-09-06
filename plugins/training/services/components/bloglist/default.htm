@@ -11,7 +11,7 @@
             </div>
         </div>
 
-        <form method="get" action="{{ this.page.baseFileName|page }}" class="blog-search-form">
+        <form method="get" action="{{ this.page.baseFileName|page }}" class="blog-filter-form">
             <div class="blog-search-box">
                 <input
                     type="text"
@@ -21,16 +21,59 @@
                     aria-label="Search blog posts"
                 >
 
+                <select
+                    name="category"
+                    aria-label="Filter by category"
+                    class="blog-category-select"
+                >
+                    <option value="">All Categories</option>
+
+                    {% for category in blogCategories %}
+                        <option
+                            value="{{ category.slug }}"
+                            {{ selectedBlogCategory == category.slug ? 'selected' : '' }}
+                        >
+                            {{ category.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+
                 <button type="submit">
-                    Search
+                    Apply
                 </button>
+
+                {% if blogSearch or selectedBlogCategory %}
+                    <a
+                        href="{{ this.page.baseFileName|page }}"
+                        class="blog-clear-filters"
+                    >
+                        Clear
+                    </a>
+                {% endif %}
             </div>
         </form>
 
-        {% if blogSearch %}
+        {% if blogSearch or selectedBlogCategory %}
             <div class="blog-search-summary">
-                Search results for:
-                <strong>{{ blogSearch }}</strong>
+                {% if blogSearch %}
+                    Search:
+                    <strong>{{ blogSearch }}</strong>
+                {% endif %}
+
+                {% if selectedBlogCategory %}
+                    {% if blogSearch %}
+                        <span> | </span>
+                    {% endif %}
+
+                    Category:
+                    <strong>
+                        {% for category in blogCategories %}
+                            {% if category.slug == selectedBlogCategory %}
+                                {{ category.name }}
+                            {% endif %}
+                        {% endfor %}
+                    </strong>
+                {% endif %}
             </div>
         {% endif %}
 
@@ -84,9 +127,19 @@
 
             {% if posts.lastPage > 1 %}
                 <nav class="blog-pagination" aria-label="Blog pagination">
+                    {% set filterQuery = '' %}
+
+                    {% if blogSearch %}
+                        {% set filterQuery = filterQuery ~ '&q=' ~ blogSearch|url_encode %}
+                    {% endif %}
+
+                    {% if selectedBlogCategory %}
+                        {% set filterQuery = filterQuery ~ '&category=' ~ selectedBlogCategory|url_encode %}
+                    {% endif %}
+
                     {% if posts.currentPage > 1 %}
                         <a
-                            href="{{ this.page.baseFileName|page }}?page={{ posts.currentPage - 1 }}{% if blogSearch %}&q={{ blogSearch|url_encode }}{% endif %}"
+                            href="{{ this.page.baseFileName|page }}?page={{ posts.currentPage - 1 }}{{ filterQuery }}"
                             class="pagination-button"
                         >
                             Previous
@@ -100,7 +153,7 @@
                     <div class="pagination-pages">
                         {% for pageNumber in 1..posts.lastPage %}
                             <a
-                                href="{{ this.page.baseFileName|page }}?page={{ pageNumber }}{% if blogSearch %}&q={{ blogSearch|url_encode }}{% endif %}"
+                                href="{{ this.page.baseFileName|page }}?page={{ pageNumber }}{{ filterQuery }}"
                                 class="pagination-page {{ posts.currentPage == pageNumber ? 'active' : '' }}"
                             >
                                 {{ pageNumber }}
@@ -110,7 +163,7 @@
 
                     {% if posts.currentPage < posts.lastPage %}
                         <a
-                            href="{{ this.page.baseFileName|page }}?page={{ posts.currentPage + 1 }}{% if blogSearch %}&q={{ blogSearch|url_encode }}{% endif %}"
+                            href="{{ this.page.baseFileName|page }}?page={{ posts.currentPage + 1 }}{{ filterQuery }}"
                             class="pagination-button"
                         >
                             Next
@@ -124,25 +177,18 @@
             {% endif %}
         {% else %}
             <div class="blog-empty">
-                {% if blogSearch %}
-                    <h2>No results found</h2>
-                    <p>
-                        No blog posts matched
-                        "<strong>{{ blogSearch }}</strong>".
-                    </p>
+                <h2>No results found</h2>
 
-                    <a
-                        href="{{ this.page.baseFileName|page }}"
-                        class="blog-reset-link"
-                    >
-                        Clear Search
-                    </a>
-                {% else %}
-                    <h2>No blog posts found</h2>
-                    <p>
-                        There are currently no published posts available.
-                    </p>
-                {% endif %}
+                <p>
+                    No published blog posts match the selected filters.
+                </p>
+
+                <a
+                    href="{{ this.page.baseFileName|page }}"
+                    class="blog-reset-link"
+                >
+                    Clear Filters
+                </a>
             </div>
         {% endif %}
     </div>
