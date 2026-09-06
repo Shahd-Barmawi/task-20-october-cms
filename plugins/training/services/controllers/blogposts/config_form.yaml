@@ -1,0 +1,31 @@
+# ===================================
+#  Form Behavior Config
+# ===================================
+
+# Record name
+name: Blog Post
+
+# Model Form Field configuration
+form: $/training/services/models/blogpost/fields.yaml
+
+# Model Class name
+modelClass: Training\Services\Models\BlogPost
+
+# Default redirect location
+defaultRedirect: training/services/blogposts
+
+# Create page
+create:
+    title: backend::lang.form.create_title
+    redirect: training/services/blogposts/update/:id
+    redirectClose: training/services/blogposts
+
+# Update page
+update:
+    title: backend::lang.form.update_title
+    redirect: training/services/blogposts
+    redirectClose: training/services/blogposts
+
+# Preview page
+preview:
+    title: backend::lang.form.preview_title

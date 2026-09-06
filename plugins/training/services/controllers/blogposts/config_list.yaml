@@ -1,0 +1,28 @@
+list: $/training/services/models/blogpost/columns.yaml
+
+modelClass: Training\Services\Models\BlogPost
+
+title: Manage Blog Posts
+
+recordUrl: training/services/blogposts/update/:id
+
+noRecordsMessage: No blog posts found.
+
+recordsPerPage: 20
+
+showPageNumbers: true
+showSetup: true
+showSorting: true
+showCheckboxes: true
+
+defaultSort:
+    column: published_at
+    direction: desc
+
+toolbar:
+    buttons: list_toolbar
+
+    search:
+        prompt: Search...
+
+filter: $/training/services/models/blogpost/scopes.yaml

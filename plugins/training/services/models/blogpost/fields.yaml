@@ -1,8 +1,54 @@
-# ===================================
-#  Form Field Definitions
-# ===================================
-
 fields:
-    id:
-        label: ID
-        disabled: true
+    title:
+        label: Title
+        span: left
+        required: true
+
+    slug:
+        label: Slug
+        span: right
+        required: true
+
+    excerpt:
+        label: Excerpt / Summary
+        type: textarea
+        size: small
+        span: full
+
+    body:
+        label: Main Content
+        type: richeditor
+        size: huge
+        span: full
+        required: true
+
+    blog_category_id:
+        label: Category
+        type: dropdown
+        span: left
+        required: true
+
+    status:
+        label: Publication Status
+        type: dropdown
+        options:
+            draft: Draft
+            published: Published
+        default: draft
+        span: right
+        required: true
+
+    published_at:
+        label: Published Date / Time
+        type: datepicker
+        mode: datetime
+        span: left
+
+    featured_image:
+        label: Featured Image
+        type: fileupload
+        mode: image
+        imageWidth: 300
+        imageHeight: 200
+        span: right
+        

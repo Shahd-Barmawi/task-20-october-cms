@@ -40,6 +40,16 @@ class Plugin extends PluginBase
                 'tab' => 'Services',
                 'label' => 'Manage Dynamic Pages',
             ],
+
+            'training.services.manage_blog_categories' => [
+                'tab' => 'Blog',
+                'label' => 'Manage Blog Categories',
+            ],
+
+            'training.services.manage_blog_posts' => [
+                'tab' => 'Blog',
+                'label' => 'Manage Blog Posts',
+            ],
         ];
     }
 
@@ -67,37 +77,43 @@ class Plugin extends PluginBase
             'training.services.manage_pages'
         );
 
+        $canManageBlogCategories = $user->hasAccess(
+            'training.services.manage_blog_categories'
+        );
+
+        $canManageBlogPosts = $user->hasAccess(
+            'training.services.manage_blog_posts'
+        );
+
+        $navigation = [];
+
         if (
-            !$canManageServices &&
-            !$canManageCategories &&
-            !$canManageContactMessages &&
-            !$canManagePages
+            $canManageServices ||
+            $canManageCategories ||
+            $canManageContactMessages ||
+            $canManagePages
         ) {
-            return [];
-        }
+            if ($canManageServices) {
+                $servicesMainUrl = Backend::url(
+                    'training/services/services'
+                );
+            } elseif ($canManageCategories) {
+                $servicesMainUrl = Backend::url(
+                    'training/services/categories'
+                );
+            } elseif ($canManageContactMessages) {
+                $servicesMainUrl = Backend::url(
+                    'training/services/contactmessages'
+                );
+            } else {
+                $servicesMainUrl = Backend::url(
+                    'training/services/pages'
+                );
+            }
 
-        if ($canManageServices) {
-            $mainUrl = Backend::url(
-                'training/services/services'
-            );
-        } elseif ($canManageCategories) {
-            $mainUrl = Backend::url(
-                'training/services/categories'
-            );
-        } elseif ($canManageContactMessages) {
-            $mainUrl = Backend::url(
-                'training/services/contactmessages'
-            );
-        } else {
-            $mainUrl = Backend::url(
-                'training/services/pages'
-            );
-        }
-
-        return [
-            'services' => [
+            $navigation['services'] = [
                 'label' => 'Services',
-                'url' => $mainUrl,
+                'url' => $servicesMainUrl,
                 'icon' => 'icon-briefcase',
                 'order' => 500,
 
@@ -150,8 +166,58 @@ class Plugin extends PluginBase
                         'order' => 400,
                     ],
                 ],
-            ],
-        ];
+            ];
+        }
+
+        if (
+            $canManageBlogCategories ||
+            $canManageBlogPosts
+        ) {
+            if ($canManageBlogPosts) {
+                $blogMainUrl = Backend::url(
+                    'training/services/blogposts'
+                );
+            } else {
+                $blogMainUrl = Backend::url(
+                    'training/services/blogcategories'
+                );
+            }
+
+            $navigation['blog'] = [
+                'label' => 'Blog',
+                'url' => $blogMainUrl,
+                'icon' => 'icon-newspaper-o',
+                'order' => 600,
+
+                'sideMenu' => [
+                    'blogposts' => [
+                        'label' => 'Blog Posts',
+                        'url' => Backend::url(
+                            'training/services/blogposts'
+                        ),
+                        'icon' => 'icon-file-text',
+                        'permissions' => [
+                            'training.services.manage_blog_posts',
+                        ],
+                        'order' => 100,
+                    ],
+
+                    'blogcategories' => [
+                        'label' => 'Blog Categories',
+                        'url' => Backend::url(
+                            'training/services/blogcategories'
+                        ),
+                        'icon' => 'icon-folder-open',
+                        'permissions' => [
+                            'training.services.manage_blog_categories',
+                        ],
+                        'order' => 200,
+                    ],
+                ],
+            ];
+        }
+
+        return $navigation;
     }
 
     public function registerSettings()

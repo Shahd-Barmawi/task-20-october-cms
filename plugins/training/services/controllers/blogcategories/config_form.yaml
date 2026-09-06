@@ -1,0 +1,21 @@
+name: Blog Category
+
+form: $/training/services/models/blogcategory/fields.yaml
+
+modelClass: Training\Services\Models\BlogCategory
+
+defaultRedirect: training/services/blogcategories
+
+create:
+    title: Create Blog Category
+    redirect: training/services/blogcategories/update/:id
+    redirectClose: training/services/blogcategories
+
+update:
+    title: Edit Blog Category
+    redirect: training/services/blogcategories
+    redirectClose: training/services/blogcategories
+
+preview:
+    title: Preview Blog Category
+    
