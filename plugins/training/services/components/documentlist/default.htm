@@ -10,6 +10,16 @@
             </p>
         </header>
 
+        {% if documentDownloadError == 'unavailable' %}
+            <div class="documents-alert documents-alert-error">
+                This document is unavailable or is not published.
+            </div>
+        {% elseif documentDownloadError == 'missing' %}
+            <div class="documents-alert documents-alert-error">
+                The document file is currently unavailable.
+            </div>
+        {% endif %}
+
         <form
             class="documents-toolbar"
             method="get"

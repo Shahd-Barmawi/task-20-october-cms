@@ -13,6 +13,7 @@ class DocumentList extends ComponentBase
     public $categories;
     public $search;
     public $selectedCategory;
+    public $downloadError;
 
     public function componentDetails()
     {
@@ -77,6 +78,7 @@ class DocumentList extends ComponentBase
     {
         $this->search = trim((string) get('q'));
         $this->selectedCategory = trim((string) get('category'));
+        $this->downloadError = trim((string) get('download_error'));
 
         $query = Document::with([
             'category',
@@ -129,5 +131,6 @@ class DocumentList extends ComponentBase
         $this->page['documentCategories'] = $this->categories;
         $this->page['documentSearch'] = $this->search;
         $this->page['selectedDocumentCategory'] = $this->selectedCategory;
+        $this->page['documentDownloadError'] = $this->downloadError;
     }
 }
