@@ -2235,3 +2235,641 @@ The completed module provides:
 - Responsive desktop and mobile interfaces
 
 The result is a reusable and maintainable Blog/News system integrated into the existing Training CMS project.
+
+---
+
+# Task 26 - October CMS Document Library, File Management & Downloads
+
+## Overview
+
+Task 26 extends the existing October CMS project with a complete Document Library module.
+
+The module provides backend management for document categories and documents, controlled file uploads, public document discovery, search and category filtering, pagination, publication rules, secure download handling, and download tracking.
+
+The implementation continues using the existing custom October CMS plugin and theme from the previous tasks without creating a new project.
+
+---
+
+## Features Implemented
+
+The Document Library includes:
+
+- Document Category management.
+- Document management.
+- File attachments using October CMS file attachment capabilities.
+- Published and Draft document statuses.
+- Optional publication dates.
+- File type validation.
+- Maximum upload size validation.
+- Backend permissions.
+- Public Document Library page.
+- Search by document title and description.
+- Category filtering.
+- Combined search and category filtering.
+- Database-level pagination.
+- Download handling through the application.
+- Download counter tracking.
+- File replacement support.
+- Handling of missing and unavailable files.
+- Handling of invalid or unavailable document downloads.
+- Empty and no-result states.
+- Responsive public Document Library interface.
+
+---
+
+## Document Categories
+
+A `DocumentCategory` model was created to organize documents into categories.
+
+Each category contains:
+
+- Name
+- Slug
+- Status
+- Display order
+- Created timestamp
+- Updated timestamp
+
+Category slugs are validated and must be unique.
+
+Only active categories are available through the public Document Library.
+
+### Sample Categories
+
+The following sample categories were created:
+
+- Technical Guides
+- Training Resources
+- Company Documents
+
+---
+
+## Document Entity
+
+A database-backed `Document` model was created for managing uploaded documents.
+
+Each Document contains:
+
+- Title
+- Unique slug
+- Short description
+- Document Category relationship
+- Attached file
+- Status
+- Optional publication date
+- Download counter
+- Created timestamp
+- Updated timestamp
+
+The supported document statuses are:
+
+- Published
+- Draft
+
+Documents are related to Document Categories through a category relationship.
+
+---
+
+## Document Relationships
+
+Each Document belongs to one Document Category.
+
+The relationship is implemented using the `document_category_id` foreign key.
+
+Conceptually:
+
+```text
+DocumentCategory
+      |
+      | has many
+      |
+   Documents
+
+Document
+      |
+      | belongs to
+      |
+DocumentCategory
+```
+
+The Document model also uses an October CMS file attachment relationship for its uploaded file.
+
+---
+
+## File Attachment Approach
+
+Uploaded files are handled using the native October CMS file attachment system.
+
+The Document model defines a file attachment relationship using the October CMS `System\Models\File` model.
+
+Files are therefore not stored as binary data directly inside the normal Document database table.
+
+This keeps document metadata separate from the physical uploaded file and allows October CMS to manage file storage and attachment relationships.
+
+---
+
+## Allowed File Types
+
+The Document Library accepts the following document formats:
+
+- PDF
+- DOC
+- DOCX
+- XLS
+- XLSX
+- PPT
+- PPTX
+
+Unsupported file types are rejected during upload.
+
+For example, a `.txt` file was tested and correctly rejected by the upload validation.
+
+---
+
+## Maximum File Size
+
+The maximum allowed uploaded document size is:
+
+```text
+10 MB
+```
+
+Files exceeding the configured maximum size are rejected.
+
+The upload restrictions are applied to prevent unsupported or excessively large files from being accepted by the Document Library.
+
+---
+
+## Backend Document Management
+
+Backend management sections were created for:
+
+- Documents
+- Document Categories
+
+Authorized backend users can manage Document Library content through the October CMS administration area.
+
+Document management supports:
+
+- Listing documents
+- Creating documents
+- Editing documents
+- Publishing documents
+- Keeping documents as Draft
+- Replacing attached files
+- Deleting documents
+
+The backend Documents list includes useful information such as:
+
+- Title
+- Category
+- Status
+- File name
+- File type
+- Download count
+- Updated date
+
+Backend filtering is also available for useful document attributes such as status and category.
+
+---
+
+## File Replacement
+
+An attached file can be replaced while keeping the existing Document record and its metadata.
+
+Replacing a file does not require creating a new Document record.
+
+The existing:
+
+- Title
+- Slug
+- Description
+- Category
+- Publication information
+- Document record
+
+can remain unchanged while the attached file is replaced.
+
+The public Document Library then reflects the latest attached file.
+
+File replacement was tested successfully during Task 26.
+
+---
+
+## Backend Permissions
+
+Separate backend permissions were added for Document Library management.
+
+The permissions include:
+
+```text
+training.services.manage_documents
+training.services.manage_document_categories
+```
+
+These permissions are applied to the relevant backend navigation and controllers.
+
+A restricted backend user without the required permission was tested and was denied access to Document management.
+
+This prevents unauthorized backend users from managing Documents or Document Categories.
+
+---
+
+## Public Document Library
+
+A public Document Library page was added to the existing theme.
+
+Public URL:
+
+```text
+/documents
+```
+
+The page displays eligible published documents using the existing project design.
+
+Each document card can display:
+
+- Title
+- Category
+- Short description
+- File type
+- Publication or upload date
+- Download count
+- Download action
+
+Only documents that satisfy the public publication rules are included.
+
+---
+
+## Publication and Access Rules
+
+The public Document Library does not display every database record automatically.
+
+A document is eligible for public display when:
+
+- Its status is `published`.
+- Its category is active.
+- Its publication date is not in the future when a publication date is provided.
+
+Draft documents are excluded from the public library.
+
+Documents belonging to inactive categories are also excluded.
+
+The same eligibility rules are checked when processing a public download request.
+
+This prevents an unavailable or unpublished Document from becoming downloadable simply by changing the Document ID in the URL.
+
+---
+
+## Search
+
+The public Document Library supports search using the Document:
+
+- Title
+- Description
+
+Search is performed through the server/database query rather than by loading all documents and hiding unmatched records in the browser.
+
+Example:
+
+```text
+/documents?q=Frontend
+```
+
+Only matching eligible documents are returned.
+
+---
+
+## Category Filtering
+
+Users can filter public documents by Document Category.
+
+The filter uses the category slug.
+
+Example:
+
+```text
+/documents?category=training-resources
+```
+
+Only eligible documents belonging to the selected category are returned.
+
+---
+
+## Combined Search and Category Filtering
+
+Search and category filtering can be used together.
+
+Example:
+
+```text
+/documents?q=Frontend&category=training-resources
+```
+
+Both conditions are applied to the database query.
+
+This allows users to search within a specific Document Category.
+
+---
+
+## Pagination
+
+Public Document results are paginated at the database level.
+
+The current page size is:
+
+```text
+6 documents per page
+```
+
+Enough sample Documents were created to demonstrate multiple result pages.
+
+Pagination continues to work while search or category filters are active.
+
+The active search and category values are preserved when navigating between result pages.
+
+---
+
+## Download Flow
+
+Public downloads are processed through the Document Library application flow.
+
+Instead of using the file URL directly as the Download button target, the public page sends a request containing the Document ID.
+
+Example:
+
+```text
+/documents?download=8
+```
+
+The Document List component processes the request before allowing the file to be opened.
+
+The download process performs the following checks:
+
+1. Find the requested Document.
+2. Verify that the Document is published.
+3. Verify that the Document belongs to an active category.
+4. Verify publication eligibility.
+5. Verify that an attached file exists.
+6. Increment the download counter.
+7. Redirect the valid request to the attached file.
+
+If the Document is unavailable, unpublished, inactive, or invalid, the download is not processed.
+
+---
+
+## Download Counter
+
+Each Document contains a `download_count` value.
+
+The counter is incremented only when a valid download request is processed.
+
+For example:
+
+```text
+Downloads: 0
+```
+
+becomes:
+
+```text
+Downloads: 1
+```
+
+after a valid download request.
+
+Invalid or unavailable Document requests do not increment the counter.
+
+The download counter behavior was tested successfully.
+
+---
+
+## Missing and Invalid Download Handling
+
+The application handles invalid download requests without exposing an application error.
+
+For an unknown, inactive, or unavailable Document, the user is redirected back to the Document Library with clear feedback:
+
+```text
+This document is unavailable or is not published.
+```
+
+For a Document whose attached file is missing, the application provides appropriate unavailable-file feedback.
+
+This prevents invalid requests from breaking the public interface.
+
+---
+
+## Missing File Handling
+
+The public Document Library checks whether a Document has an attached file.
+
+If the file attachment is unavailable, the Document card remains usable and displays:
+
+```text
+File unavailable
+```
+
+instead of displaying a broken Download link.
+
+This allows the page to continue rendering normally even when an attachment has been removed or is missing.
+
+---
+
+## Empty and No-Result States
+
+The public Document Library provides user-friendly feedback for empty states.
+
+If search or filtering returns no matching Documents, the page displays:
+
+```text
+No results found
+```
+
+with a message explaining that no documents matched the current search or category filter.
+
+If no published Documents are available, the page displays:
+
+```text
+No documents available
+```
+
+The interface therefore avoids blank pages or application errors when no results are available.
+
+---
+
+## Responsive Design
+
+The public Document Library was designed to remain practical on mobile-sized screens.
+
+Responsive behavior was applied to:
+
+- Document Library header
+- Search field
+- Category filter
+- Filter actions
+- Document cards
+- Document metadata
+- Download actions
+- Pagination
+
+On smaller screens, the layout adjusts to a single-column structure and form controls adapt to the available screen width.
+
+The responsive layout was tested using a `390 × 844` mobile-sized viewport.
+
+---
+
+## Sample Data and Testing
+
+Three Document Categories were created:
+
+```text
+Technical Guides
+Training Resources
+Company Documents
+```
+
+At least eight Document records were created so that pagination could be demonstrated.
+
+The test data includes:
+
+- Published Documents
+- At least one Draft Document
+- Multiple Document Categories
+- PDF files
+- DOCX files
+
+Using PDF and DOCX files verifies support for more than one allowed document type.
+
+---
+
+## End-to-End Testing
+
+The following scenarios were tested successfully:
+
+- Three Document Categories were created.
+- At least eight Document records were created.
+- More than one allowed file type was used.
+- At least one Document was kept as Draft.
+- Public search was verified.
+- Category filtering was verified.
+- Combined search and category filtering were verified.
+- Pagination was verified.
+- A published Document was downloaded and its counter increased.
+- An existing attached file was replaced and the latest file was reflected.
+- An unsupported `.txt` upload was rejected.
+- Backend permission restrictions were verified.
+- Draft content was hidden from the public library.
+- Unknown Document downloads were handled without an application error.
+- Missing file attachments were handled without breaking the public interface.
+- No-result search behavior was verified.
+- The public Document Library was tested on a mobile-sized screen.
+
+---
+
+## Database and Migration Updates
+
+Task 26 adds database structures for Document Categories and Documents.
+
+After pulling the project or receiving new plugin migrations, run:
+
+```bash
+php artisan october:up
+```
+
+This applies outstanding October CMS and plugin migrations.
+
+If required during development, the application cache can also be cleared using:
+
+```bash
+php artisan cache:clear
+```
+
+---
+
+## Security Considerations
+
+The Document Library includes security controls for uploaded files, backend management, and public downloads.
+
+### Upload Security
+
+Uploaded files are restricted to the approved document formats:
+
+```text
+PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX
+```
+
+The maximum file size is:
+
+```text
+10 MB
+```
+
+Unsupported files are rejected instead of being accepted as arbitrary uploads.
+
+Upload validation is performed by the application/backend configuration and should not rely only on the filename or extension supplied by the browser.
+
+### Backend Access Control
+
+Document management is protected using October CMS backend permissions.
+
+Users without the required Document Library permissions cannot manage Documents or Document Categories.
+
+### Public Download Access
+
+Only eligible published Documents belonging to active categories are available through the public Document Library.
+
+Download requests are checked against the publication and category rules before the counter is incremented and the file is opened.
+
+Invalid, unavailable, or unpublished Document requests are rejected without exposing an application error.
+
+### Sensitive Information
+
+Sensitive project information must not be committed to the public repository.
+
+This includes:
+
+- `.env`
+- Database credentials
+- Administrator passwords
+- Mail credentials
+- API keys
+- Tokens
+- Private uploaded documents
+- Other confidential information
+
+Test files used for the Document Library should not contain private or sensitive information.
+
+---
+
+## Task 26 Result
+
+Task 26 adds a complete Document Library workflow to the existing October CMS project.
+
+The final implementation provides:
+
+- Document Category management
+- Document management
+- Controlled file uploads
+- File attachments
+- Backend permissions
+- Publication rules
+- Public Document Library
+- Search
+- Category filtering
+- Combined search and filtering
+- Pagination
+- Download processing
+- Download counter tracking
+- File replacement
+- Missing-file handling
+- Invalid-state feedback
+- Responsive mobile support
+
+The public Document Library is available at:
+
+```text
+/documents
+```
+
+The implementation continues to use the same custom October CMS plugin and theme developed throughout the previous training tasks.
