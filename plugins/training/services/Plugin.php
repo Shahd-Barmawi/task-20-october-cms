@@ -50,6 +50,16 @@ class Plugin extends PluginBase
                 'tab' => 'Blog',
                 'label' => 'Manage Blog Posts',
             ],
+
+            'training.services.manage_document_categories' => [
+                'tab' => 'Documents',
+                'label' => 'Manage Document Categories',
+            ],
+
+            'training.services.manage_documents' => [
+                'tab' => 'Documents',
+                'label' => 'Manage Documents',
+            ],
         ];
     }
 
@@ -83,6 +93,14 @@ class Plugin extends PluginBase
 
         $canManageBlogPosts = $user->hasAccess(
             'training.services.manage_blog_posts'
+        );
+
+        $canManageDocumentCategories = $user->hasAccess(
+            'training.services.manage_document_categories'
+        );
+
+        $canManageDocuments = $user->hasAccess(
+            'training.services.manage_documents'
         );
 
         $navigation = [];
@@ -217,7 +235,64 @@ class Plugin extends PluginBase
             ];
         }
 
+        if (
+            $canManageDocumentCategories ||
+            $canManageDocuments
+        ) {
+            if ($canManageDocuments) {
+                $documentsMainUrl = Backend::url(
+                    'training/services/documents'
+                );
+            } else {
+                $documentsMainUrl = Backend::url(
+                    'training/services/documentcategories'
+                );
+            }
+
+            $navigation['documents'] = [
+                'label' => 'Documents',
+                'url' => $documentsMainUrl,
+                'icon' => 'icon-files-o',
+                'order' => 700,
+
+                'sideMenu' => [
+                    'documents' => [
+                        'label' => 'Documents',
+                        'url' => Backend::url(
+                            'training/services/documents'
+                        ),
+                        'icon' => 'icon-file',
+                        'permissions' => [
+                            'training.services.manage_documents',
+                        ],
+                        'order' => 100,
+                    ],
+
+                    'documentcategories' => [
+                        'label' => 'Document Categories',
+                        'url' => Backend::url(
+                            'training/services/documentcategories'
+                        ),
+                        'icon' => 'icon-folder-open',
+                        'permissions' => [
+                            'training.services.manage_document_categories',
+                        ],
+                        'order' => 200,
+                    ],
+                ],
+            ];
+        }
+
         return $navigation;
+    }
+
+    public function boot()
+    {
+        \Backend\Classes\Controller::extend(function ($controller) {
+            $controller->addCss(
+                '/plugins/training/services/assets/css/backend.css'
+            );
+        });
     }
 
     public function registerSettings()

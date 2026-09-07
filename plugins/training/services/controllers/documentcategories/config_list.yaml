@@ -1,0 +1,17 @@
+modelClass: Training\Services\Models\DocumentCategory
+title: Document Categories
+
+list: $/training/services/models/documentcategory/columns.yaml
+
+recordUrl: training/services/documentcategories/update/:id
+
+toolbar:
+    buttons: list_toolbar
+    search:
+        prompt: Search document categories...
+
+recordsPerPage: 20
+
+defaultSort:
+    column: display_order
+    direction: asc

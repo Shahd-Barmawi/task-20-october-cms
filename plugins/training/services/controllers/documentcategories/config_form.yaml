@@ -1,0 +1,15 @@
+name: Document Category
+modelClass: Training\Services\Models\DocumentCategory
+form: $/training/services/models/documentcategory/fields.yaml
+
+defaultRedirect: training/services/documentcategories
+
+create:
+    title: Create Document Category
+    redirect: training/services/documentcategories/update/:id
+    redirectClose: training/services/documentcategories
+
+update:
+    title: Edit Document Category
+    redirect: training/services/documentcategories
+    redirectClose: training/services/documentcategories

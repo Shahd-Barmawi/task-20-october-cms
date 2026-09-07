@@ -1,0 +1,207 @@
+/* =========================================================
+   October CMS Backend Responsive Styles
+   ========================================================= */
+
+/* =========================================================
+   1. TOP MAIN MENU
+   ========================================================= */
+
+#layout-mainmenu .mainmenu-items {
+    white-space: nowrap;
+}
+
+#layout-mainmenu .mainmenu-items > .mainmenu-item {
+    flex: 0 0 auto;
+}
+
+/* Medium screens */
+@media (max-width: 1200px) {
+    #layout-mainmenu .mainmenu-items > .mainmenu-item > a {
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+
+    #layout-mainmenu .mainmenu-items > .mainmenu-item > a > .nav-label {
+        font-size: 13px;
+    }
+}
+
+/* Tablet and smaller:
+   show icons only */
+@media (max-width: 1050px) {
+    #layout-mainmenu .mainmenu-items > .mainmenu-item > a > .nav-label {
+        display: none;
+    }
+
+    #layout-mainmenu .mainmenu-items > .mainmenu-item > a {
+        width: 54px;
+        min-width: 54px;
+        max-width: 54px;
+
+        padding-left: 6px;
+        padding-right: 6px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 0;
+    }
+
+    #layout-mainmenu .mainmenu-items > .mainmenu-item > a > .nav-icon {
+        margin: 0;
+        padding: 0;
+    }
+
+    #layout-mainmenu .mainmenu-items > .mainmenu-item > a > .counter {
+        display: none;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    #layout-mainmenu .mainmenu-items > .mainmenu-item > a {
+        width: 48px;
+        min-width: 48px;
+        max-width: 48px;
+    }
+}
+
+/* Very small mobile */
+@media (max-width: 576px) {
+    #layout-mainmenu .mainmenu-items > .mainmenu-item > a {
+        width: 42px;
+        min-width: 42px;
+        max-width: 42px;
+
+        padding-left: 3px;
+        padding-right: 3px;
+    }
+}
+
+/* =========================================================
+   2. MAIN BACKEND CONTENT
+   ========================================================= */
+
+#layout-body,
+#layout-content,
+.layout-container {
+    min-width: 0;
+    max-width: 100%;
+}
+
+/* =========================================================
+   3. BACKEND TOOLBAR
+   ========================================================= */
+
+@media (max-width: 1024px) {
+    .control-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .control-toolbar .toolbar-item {
+        flex: 0 1 auto;
+    }
+
+    .control-toolbar .search-input-container {
+        max-width: 100%;
+    }
+}
+
+/* =========================================================
+   4. BACKEND TABLE / LIST
+   ========================================================= */
+
+.control-list {
+    max-width: 100%;
+}
+
+.control-list table {
+    width: 100%;
+}
+
+@media (max-width: 1024px) {
+    .control-list {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .control-list table {
+        min-width: 900px;
+    }
+
+    .control-list th,
+    .control-list td {
+        white-space: nowrap;
+    }
+}
+
+/* =========================================================
+   5. SIDE NAVIGATION
+   ========================================================= */
+
+@media (max-width: 900px) {
+    #layout-sidenav {
+        width: 70px;
+        min-width: 70px;
+    }
+
+    #layout-sidenav .nav-label {
+        display: none;
+    }
+
+    #layout-sidenav .nav-icon {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+/* =========================================================
+   6. SMALL SCREENS
+   ========================================================= */
+
+@media (max-width: 768px) {
+    #layout-content {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .control-toolbar {
+        align-items: stretch;
+    }
+
+    .control-toolbar .toolbar-item,
+    .control-toolbar .btn {
+        max-width: 100%;
+    }
+
+    .control-list table {
+        min-width: 820px;
+    }
+}
+
+/* =========================================================
+   7. VERY SMALL SCREENS
+   ========================================================= */
+
+@media (max-width: 576px) {
+    #layout-sidenav {
+        width: 58px;
+        min-width: 58px;
+    }
+
+    #layout-content {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .control-toolbar {
+        gap: 8px;
+    }
+
+    .control-list table {
+        min-width: 760px;
+    }
+}

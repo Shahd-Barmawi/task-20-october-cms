@@ -1,8 +1,31 @@
-# ===================================
-#  Form Field Definitions
-# ===================================
-
 fields:
-    id:
-        label: ID
-        disabled: true
+    name:
+        label: Name
+        span: left
+        required: true
+
+    slug:
+        label: Slug
+        span: right
+        required: true
+        preset:
+            field: name
+            type: slug
+
+    status:
+        label: Status
+        type: dropdown
+        span: left
+        required: true
+        default: active
+        options:
+            active: Active
+            inactive: Inactive
+
+    display_order:
+        label: Display Order
+        type: number
+        span: right
+        required: true
+        default: 0
+        
