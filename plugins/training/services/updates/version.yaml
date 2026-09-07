@@ -33,3 +33,7 @@ v1.0.8:
 v1.0.9:
     - Create blog posts table
     - create_blog_posts_table.php
+
+v1.0.10:
+    - Create document categories table
+    - create_document_categories_table.php
