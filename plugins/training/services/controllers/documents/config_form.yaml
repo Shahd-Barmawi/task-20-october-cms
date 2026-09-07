@@ -1,0 +1,15 @@
+name: Document
+modelClass: Training\Services\Models\Document
+form: $/training/services/models/document/fields.yaml
+
+defaultRedirect: training/services/documents
+
+create:
+    title: Create Document
+    redirect: training/services/documents/update/:id
+    redirectClose: training/services/documents
+
+update:
+    title: Edit Document
+    redirect: training/services/documents
+    redirectClose: training/services/documents

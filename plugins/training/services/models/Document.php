@@ -48,4 +48,27 @@ class Document extends Model
                     ->orWhere('published_at', '<=', now());
             });
     }
+
+    public function getFileNameAttribute()
+    {
+        if (!$this->file) {
+            return 'No file';
+        }
+
+        return $this->file->file_name;
+    }
+
+    public function getFileTypeAttribute()
+    {
+        if (!$this->file || !$this->file->file_name) {
+            return '-';
+        }
+
+        return strtoupper(
+            pathinfo(
+                $this->file->file_name,
+                PATHINFO_EXTENSION
+            )
+        );
+    }
 }

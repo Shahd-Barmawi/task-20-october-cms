@@ -1,0 +1,19 @@
+modelClass: Training\Services\Models\Document
+title: Documents
+
+list: $/training/services/models/document/columns.yaml
+
+recordUrl: training/services/documents/update/:id
+
+toolbar:
+    buttons: list_toolbar
+    search:
+        prompt: Search documents...
+
+filter: config_filter.yaml
+
+recordsPerPage: 20
+
+defaultSort:
+    column: updated_at
+    direction: desc

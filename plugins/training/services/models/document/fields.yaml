@@ -1,8 +1,59 @@
-# ===================================
-#  Form Field Definitions
-# ===================================
-
 fields:
-    id:
-        label: ID
+    title:
+        label: Title
+        span: left
+        required: true
+
+    slug:
+        label: Slug
+        span: right
+        required: true
+        preset:
+            field: title
+            type: slug
+
+    description:
+        label: Short Description
+        type: textarea
+        size: small
+        span: full
+
+    category:
+        label: Category
+        type: relation
+        relation: category
+        select: name
+        span: left
+        required: true
+
+    status:
+        label: Status
+        type: dropdown
+        span: right
+        required: true
+        default: draft
+        options:
+            draft: Draft
+            published: Published
+
+    published_at:
+        label: Published At
+        type: datepicker
+        mode: datetime
+        span: left
+
+    download_count:
+        label: Download Count
+        type: number
+        span: right
+        default: 0
         disabled: true
+
+    file:
+        label: Document File
+        type: fileupload
+        mode: file
+        span: full
+        maxFiles: 1
+        fileTypes: pdf,doc,docx,xls,xlsx,ppt,pptx
+        maxFileSize: 10

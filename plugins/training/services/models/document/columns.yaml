@@ -1,8 +1,32 @@
-# ===================================
-#  List Column Definitions
-# ===================================
-
 columns:
-    id:
-        label: ID
+    title:
+        label: Title
         searchable: true
+        sortable: true
+
+    category:
+        label: Category
+        relation: category
+        select: name
+        sortable: true
+
+    status:
+        label: Status
+        sortable: true
+
+    file_name:
+        label: File Name
+        sortable: false
+
+    file_type:
+        label: File Type
+        sortable: false
+
+    download_count:
+        label: Downloads
+        sortable: true
+
+    updated_at:
+        label: Updated At
+        type: datetime
+        sortable: true

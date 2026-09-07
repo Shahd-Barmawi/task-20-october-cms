@@ -1,0 +1,15 @@
+scopes:
+    status:
+        label: Status
+        type: group
+        conditions: status in (:filtered)
+        options:
+            draft: Draft
+            published: Published
+
+    category:
+        label: Category
+        type: group
+        modelClass: Training\Services\Models\DocumentCategory
+        nameFrom: name
+        conditions: document_category_id in (:filtered)
