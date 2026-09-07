@@ -327,6 +327,9 @@ class Plugin extends PluginBase
 
             \Training\Services\Components\BlogDetails::class
             => 'blogDetails',
+
+            \Training\Services\Components\DocumentList::class
+            => 'documentList',
         ];
     }
 }

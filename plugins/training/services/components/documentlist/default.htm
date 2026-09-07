@@ -1,0 +1,186 @@
+<section class="documents-page">
+    <div class="documents-container">
+        <header class="documents-header">
+            <p class="documents-eyebrow">Resources</p>
+
+            <h1>Document Library</h1>
+
+            <p>
+                Browse available guides, training materials, and company documents.
+            </p>
+        </header>
+
+        <form
+            class="documents-toolbar"
+            method="get"
+            action="{{ 'documents'|page }}"
+        >
+            <div class="documents-search-field">
+                <label for="document-search">Search</label>
+
+                <input
+                    id="document-search"
+                    type="text"
+                    name="q"
+                    value="{{ documentSearch }}"
+                    placeholder="Search documents..."
+                >
+            </div>
+
+            <div class="documents-category-field">
+                <label for="document-category">Category</label>
+
+                <select
+                    id="document-category"
+                    name="category"
+                >
+                    <option value="">
+                        All Categories
+                    </option>
+
+                    {% for category in documentCategories %}
+                        <option
+                            value="{{ category.slug }}"
+                            {{ selectedDocumentCategory == category.slug ? 'selected' : '' }}
+                        >
+                            {{ category.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="documents-toolbar-actions">
+                <button
+                    type="submit"
+                    class="documents-filter-button"
+                >
+                    Apply
+                </button>
+
+                {% if documentSearch or selectedDocumentCategory %}
+                    <a
+                        href="{{ 'documents'|page }}"
+                        class="documents-clear-button"
+                    >
+                        Clear
+                    </a>
+                {% endif %}
+            </div>
+        </form>
+
+        {% if documents|length %}
+            <div class="documents-grid">
+                {% for document in documents %}
+                    <article class="document-card">
+                        <div class="document-card-top">
+                            <span class="document-category">
+                                {{ document.category.name }}
+                            </span>
+
+                            <span class="document-file-type">
+                                {{ document.file_type }}
+                            </span>
+                        </div>
+
+                        <h2 class="document-title">
+                            {{ document.title }}
+                        </h2>
+
+                        {% if document.description %}
+                            <p class="document-description">
+                                {{ document.description }}
+                            </p>
+                        {% endif %}
+
+                        <div class="document-meta">
+                            {% if document.published_at %}
+                                <span>
+                                    Published:
+                                    {{ document.published_at|date('M d, Y') }}
+                                </span>
+                            {% else %}
+                                <span>
+                                    Added:
+                                    {{ document.created_at|date('M d, Y') }}
+                                </span>
+                            {% endif %}
+
+                            <span>
+                                Downloads: {{ document.download_count }}
+                            </span>
+                        </div>
+
+                        {% if document.file %}
+                            <a
+                                href="{{ 'documents'|page }}?download={{ document.id }}"
+                                class="document-download-button"
+                                target="_blank"
+                                rel="noopener"
+                            >
+                                Download
+                            </a>
+                        {% else %}
+                            <span class="document-file-missing">
+                                File unavailable
+                            </span>
+                        {% endif %}
+                    </article>
+                {% endfor %}
+            </div>
+
+            {% if documents.lastPage > 1 %}
+                <nav class="documents-pagination">
+                    {% if documents.currentPage > 1 %}
+                        <a
+                            href="?page={{ documents.currentPage - 1 }}{% if documentSearch %}&q={{ documentSearch|url_encode }}{% endif %}{% if selectedDocumentCategory %}&category={{ selectedDocumentCategory|url_encode }}{% endif %}"
+                            class="documents-page-link"
+                        >
+                            Previous
+                        </a>
+                    {% endif %}
+
+                    {% for page in 1..documents.lastPage %}
+                        <a
+                            href="?page={{ page }}{% if documentSearch %}&q={{ documentSearch|url_encode }}{% endif %}{% if selectedDocumentCategory %}&category={{ selectedDocumentCategory|url_encode }}{% endif %}"
+                            class="documents-page-link {{ page == documents.currentPage ? 'active' : '' }}"
+                        >
+                            {{ page }}
+                        </a>
+                    {% endfor %}
+
+                    {% if documents.currentPage < documents.lastPage %}
+                        <a
+                            href="?page={{ documents.currentPage + 1 }}{% if documentSearch %}&q={{ documentSearch|url_encode }}{% endif %}{% if selectedDocumentCategory %}&category={{ selectedDocumentCategory|url_encode }}{% endif %}"
+                            class="documents-page-link"
+                        >
+                            Next
+                        </a>
+                    {% endif %}
+                </nav>
+            {% endif %}
+        {% else %}
+            <div class="documents-empty">
+                {% if documentSearch or selectedDocumentCategory %}
+                    <h2>No results found</h2>
+
+                    <p>
+                        No documents matched your current search or category filter.
+                    </p>
+
+                    <a
+                        href="{{ 'documents'|page }}"
+                        class="documents-clear-button documents-empty-clear"
+                    >
+                        Clear Filters
+                    </a>
+                {% else %}
+                    <h2>No documents available</h2>
+
+                    <p>
+                        There are currently no published documents available.
+                    </p>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</section>
