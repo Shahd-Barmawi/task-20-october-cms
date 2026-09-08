@@ -1,3 +1,7 @@
+<?php
+
+/** @var array $kpis */
+?>
 <div class="layout">
     <div class="layout-row">
         <div class="padded-container task28-dashboard">
