@@ -42,4 +42,24 @@ class AuditLogs extends Controller
             'auditlogs'
         );
     }
+
+    /**
+     * Audit log records are read-only.
+     */
+    public function create()
+    {
+        return $this->makeRedirect(
+            'training/services/auditlogs'
+        );
+    }
+
+    /**
+     * Audit log records cannot be edited.
+     */
+    public function update($recordId = null)
+    {
+        return $this->makeRedirect(
+            'training/services/auditlogs'
+        );
+    }
 }
