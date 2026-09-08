@@ -9,6 +9,7 @@ use Training\Services\Models\Document;
 use Training\Services\Models\ContactMessage;
 use Training\Services\Models\Page;
 use Training\Services\Models\Service;
+use Training\Services\Models\AuditLog;
 
 class Dashboard extends Controller
 {
@@ -30,6 +31,9 @@ class Dashboard extends Controller
     {
         $this->pageTitle = 'Administrative Dashboard';
 
+        /*
+         * KPI Summary Cards
+         */
         $this->vars['kpis'] = [
             'published_blog_posts' => BlogPost::where(
                 'status',
@@ -65,5 +69,25 @@ class Dashboard extends Controller
                 true
             )->count(),
         ];
+
+        /*
+         * Part 5 - Recent Activity
+         *
+         * Keep the result sets small because the Dashboard
+         * only needs a recent operational overview.
+         */
+        $this->vars['latestContactMessages'] = ContactMessage::orderBy(
+            'created_at',
+            'desc'
+        )
+            ->limit(5)
+            ->get();
+
+        $this->vars['recentAuditLogs'] = AuditLog::orderBy(
+            'created_at',
+            'desc'
+        )
+            ->limit(5)
+            ->get();
     }
 }

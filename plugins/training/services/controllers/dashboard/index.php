@@ -1,7 +1,10 @@
 <?php
 
 /** @var array $kpis */
+/** @var \Illuminate\Support\Collection $latestContactMessages */
+/** @var \Illuminate\Support\Collection $recentAuditLogs */
 ?>
+
 <div class="layout">
     <div class="layout-row">
         <div class="padded-container task28-dashboard">
@@ -21,6 +24,7 @@
                 </div>
             </div>
 
+            <!-- KPI SUMMARY CARDS -->
             <div class="task28-kpi-grid">
 
                 <div class="task28-kpi-card task28-green">
@@ -192,6 +196,199 @@
                 </div>
 
             </div>
+
+            <!-- RECENT ACTIVITY -->
+            <div class="task28-recent-header">
+                <div>
+                    <h2>Recent Activity</h2>
+                    <p>
+                        Quick access to the latest operational activity
+                        across the CMS.
+                    </p>
+                </div>
+            </div>
+
+            <div class="task28-recent-grid">
+
+                <!-- Latest Contact Messages -->
+                <div class="task28-recent-card">
+
+                    <div class="task28-recent-card-header">
+                        <div>
+                            <h3>
+                                <i class="icon-envelope"></i>
+                                Latest Contact Messages
+                            </h3>
+
+                            <p>
+                                Five most recently received messages.
+                            </p>
+                        </div>
+
+                        <a
+                            href="<?= Backend::url(
+                                        'training/services/contactmessages'
+                                    ) ?>"
+                            class="task28-view-all">
+                            View All
+                            <i class="icon-angle-right"></i>
+                        </a>
+                    </div>
+
+                    <div class="task28-activity-list">
+
+                        <?php if ($latestContactMessages->count()): ?>
+
+                            <?php foreach ($latestContactMessages as $message): ?>
+
+                                <div class="task28-activity-item">
+
+                                    <div class="task28-activity-icon task28-message-icon">
+                                        <i class="icon-envelope-o"></i>
+                                    </div>
+
+                                    <div class="task28-activity-content">
+
+                                        <div class="task28-activity-main">
+                                            <?= e(
+                                                $message->name
+                                                    ?? $message->email
+                                                    ?? 'Contact Message'
+                                            ) ?>
+                                        </div>
+
+                                        <div class="task28-activity-meta">
+
+                                            <?php if (!empty($message->email)): ?>
+                                                <span>
+                                                    <?= e($message->email) ?>
+                                                </span>
+                                            <?php endif ?>
+
+                                            <span>
+                                                <?= e(
+                                                    $message->created_at
+                                                        ->format(
+                                                            'M d, Y H:i'
+                                                        )
+                                                ) ?>
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                    <span
+                                        class="task28-status
+                                        <?= $message->status === 'new'
+                                            ? 'task28-status-new'
+                                            : 'task28-status-read' ?>">
+                                        <?= e(ucfirst($message->status)) ?>
+                                    </span>
+
+                                </div>
+
+                            <?php endforeach ?>
+
+                        <?php else: ?>
+
+                            <div class="task28-empty-state">
+                                <i class="icon-inbox"></i>
+                                <span>No contact messages available.</span>
+                            </div>
+
+                        <?php endif ?>
+
+                    </div>
+                </div>
+
+                <!-- Recent Audit Log -->
+                <div class="task28-recent-card">
+
+                    <div class="task28-recent-card-header">
+                        <div>
+                            <h3>
+                                <i class="icon-history"></i>
+                                Recent Audit Log Activities
+                            </h3>
+
+                            <p>
+                                Five most recent administrative actions.
+                            </p>
+                        </div>
+
+                        <a
+                            href="<?= Backend::url(
+                                        'training/services/auditlogs'
+                                    ) ?>"
+                            class="task28-view-all">
+                            View All
+                            <i class="icon-angle-right"></i>
+                        </a>
+                    </div>
+
+                    <div class="task28-activity-list">
+
+                        <?php if ($recentAuditLogs->count()): ?>
+
+                            <?php foreach ($recentAuditLogs as $log): ?>
+
+                                <div class="task28-activity-item">
+
+                                    <div class="task28-activity-icon task28-audit-icon">
+                                        <i class="icon-history"></i>
+                                    </div>
+
+                                    <div class="task28-activity-content">
+
+                                        <div class="task28-activity-main">
+                                            <?= e(
+                                                ucfirst(
+                                                    $log->action
+                                                        ?? 'Administrative Action'
+                                                )
+                                            ) ?>
+                                        </div>
+
+                                        <div class="task28-activity-meta">
+
+                                            <?php if (!empty($log->entity_type)): ?>
+                                                <span>
+                                                    <?= e($log->entity_type) ?>
+                                                </span>
+                                            <?php endif ?>
+
+                                            <span>
+                                                <?= e(
+                                                    $log->created_at
+                                                        ->format(
+                                                            'M d, Y H:i'
+                                                        )
+                                                ) ?>
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            <?php endforeach ?>
+
+                        <?php else: ?>
+
+                            <div class="task28-empty-state">
+                                <i class="icon-history"></i>
+                                <span>No audit activity available.</span>
+                            </div>
+
+                        <?php endif ?>
+
+                    </div>
+                </div>
+
+            </div>
+
         </div>
     </div>
 </div>
