@@ -2,14 +2,19 @@
 #  Audit Log List Behavior Config
 # ===================================
 
-list: $/training/services/models/auditlog/columns.yaml
-
 modelClass: Training\Services\Models\AuditLog
 
 title: Audit Log
 
-# Open a read-only details/preview page
+list: $/training/services/models/auditlog/columns.yaml
+
 recordUrl: training/services/auditlogs/preview/:id
+
+toolbar:
+    search:
+        prompt: Search audit logs...
+
+filter: config_filter.yaml
 
 noRecordsMessage: No audit log entries found.
 
@@ -21,13 +26,9 @@ showSetup: true
 
 showSorting: true
 
+showCheckboxes: false
+
 defaultSort:
     column: created_at
     direction: desc
-
-# Audit records must not be bulk edited/deleted
-showCheckboxes: false
-
-toolbar:
-    search:
-        prompt: Search audit logs...
+    

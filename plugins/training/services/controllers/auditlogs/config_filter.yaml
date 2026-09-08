@@ -1,0 +1,22 @@
+# ===================================
+#  Audit Log Filter Configuration
+# ===================================
+
+scopes:
+    action:
+        label: Action
+        type: group
+        conditions: action in (:filtered)
+        options:
+            Create: Create
+            Update: Update
+            Delete: Delete
+            Status Change: Status Change
+
+    module:
+        label: Module
+        type: group
+        conditions: module in (:filtered)
+        options:
+            Service: Service
+            Document: Document
