@@ -31,22 +31,57 @@ class AuditLogger
 
     private static function sanitizeMetadata(array $metadata): array
     {
-        $sensitiveFields = [
+        $sanitized = [];
+
+        foreach ($metadata as $key => $value) {
+            if (self::isSensitiveKey((string) $key)) {
+                continue;
+            }
+
+            if (is_array($value)) {
+                $value = self::sanitizeMetadata($value);
+            }
+
+            $sanitized[$key] = $value;
+        }
+
+        return $sanitized;
+    }
+
+    private static function isSensitiveKey(string $key): bool
+    {
+        $normalizedKey = strtolower(
+            str_replace(['-', ' '], '_', $key)
+        );
+
+        $sensitiveTerms = [
             'password',
-            'password_confirmation',
+            'passwd',
             'token',
             'access_token',
             'refresh_token',
             'api_key',
+            'apikey',
             'secret',
+            'session',
             'session_id',
             'authorization',
+            'auth_header',
+            'cookie',
+            'private_key',
+            'client_secret',
+            'env',
+            'environment',
+            'file_content',
+            'file_contents',
         ];
 
-        foreach ($sensitiveFields as $field) {
-            unset($metadata[$field]);
+        foreach ($sensitiveTerms as $term) {
+            if (str_contains($normalizedKey, $term)) {
+                return true;
+            }
         }
 
-        return $metadata;
+        return false;
     }
 }
