@@ -66,6 +66,11 @@ class Plugin extends PluginBase
                 'tab' => 'Audit',
                 'label' => 'Review Audit Log',
             ],
+
+            'training.services.view_dashboard' => [
+                'tab' => 'Dashboard',
+                'label' => 'View Administrative Dashboard',
+            ],
         ];
     }
 
@@ -113,7 +118,25 @@ class Plugin extends PluginBase
             'training.services.review_audit_logs'
         );
 
+        $canViewDashboard = $user->hasAccess(
+            'training.services.view_dashboard'
+        );
+
         $navigation = [];
+
+        if ($canViewDashboard) {
+            $navigation['dashboard'] = [
+                'label' => 'Dashboard',
+                'url' => Backend::url(
+                    'training/services/dashboard'
+                ),
+                'icon' => 'icon-dashboard',
+                'order' => 400,
+                'permissions' => [
+                    'training.services.view_dashboard',
+                ],
+            ];
+        }
 
         if (
             $canManageServices ||
