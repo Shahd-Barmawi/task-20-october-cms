@@ -2873,3 +2873,600 @@ The public Document Library is available at:
 ```
 
 The implementation continues to use the same custom October CMS plugin and theme developed throughout the previous training tasks.
+
+---
+
+# Task 27 — October CMS User Roles, Audit Log & Administrative Activity Tracking
+
+## Overview
+
+Task 27 extends the existing October CMS training project with role-based backend access control and administrative activity tracking.
+
+The implementation introduces practical backend roles, a reusable audit logging mechanism, a read-only Audit Log interface, filtering capabilities, permission-based access, audit integrity protection, and sensitive metadata sanitization.
+
+The audit system tracks meaningful administrative changes performed on selected content modules while preserving useful information about each action for later administrative review.
+
+---
+
+## Backend Roles
+
+Three practical backend roles were configured for Task 27.
+
+### Content Editor
+
+The Content Editor role is intended for users responsible for basic content management.
+
+The role can manage selected content modules, including:
+
+- Services
+- Service Categories
+- Dynamic Pages
+- Blog Categories
+- Blog Posts
+- Document Categories
+- Documents
+
+The Content Editor does not have permission to review the Audit Log or access administrative audit functionality.
+
+### Content Manager
+
+The Content Manager role provides broader content management capabilities.
+
+The role can manage:
+
+- Services
+- Service Categories
+- Contact Messages
+- Dynamic Pages
+- Blog Categories
+- Blog Posts
+- Document Categories
+- Documents
+
+The Content Manager does not automatically receive Audit Log access.
+
+### Administrator Supervisor
+
+The Administrator Supervisor role provides full content management access together with permission to review administrative activity.
+
+In addition to the content management permissions, this role receives:
+
+- Review Audit Log
+
+This permission allows authorized users to access the Audit Log backend screen and inspect recorded administrative actions.
+
+No passwords or authentication credentials are hardcoded in the project source code.
+
+---
+
+## Audit Log Permission
+
+A dedicated backend permission was added:
+
+```text
+training.services.review_audit_logs
+```
+
+The permission is displayed in the backend under:
+
+```text
+Audit
+└── Review Audit Log
+```
+
+The Audit navigation item is displayed only to backend users who have this permission.
+
+The Audit Log controller also requires the same permission. Therefore, unauthorized users cannot bypass the navigation restriction by manually entering the Audit Log URL.
+
+---
+
+## Audit Log Data
+
+Audit records are stored in the following database table:
+
+```text
+training_services_audit_logs
+```
+
+Each Audit Log entry stores the following information:
+
+| Field               | Description                                     |
+| ------------------- | ----------------------------------------------- |
+| `backend_user_id`   | ID of the backend user who performed the action |
+| `backend_user_name` | Human-readable name of the backend user         |
+| `action`            | Type of administrative action                   |
+| `module`            | Module or entity affected by the action         |
+| `record_id`         | ID of the affected record                       |
+| `description`       | Human-readable description of the activity      |
+| `metadata`          | Optional additional non-sensitive information   |
+| `created_at`        | Date and time when the activity was recorded    |
+| `updated_at`        | Audit record timestamp                          |
+
+The backend user name is stored directly in the Audit Log so that the activity remains understandable even if the related backend account changes later.
+
+---
+
+## Tracked Modules and Actions
+
+Administrative activity is tracked for two content modules: Services and Documents.
+
+### Services
+
+The following Service actions are tracked:
+
+- Create
+- Update
+- Status Change
+- Delete
+
+For Service status changes, the Audit Log records the transition of the `is_active` value.
+
+### Documents
+
+The following Document actions are tracked:
+
+- Create
+- Update
+- Status Change
+- Delete
+
+For Document status changes, the Audit Log records publication-state changes such as:
+
+```text
+draft → published
+```
+
+The implementation intentionally tracks meaningful administrative content changes rather than ordinary page views.
+
+---
+
+## Reusable Audit Logging Approach
+
+Audit logging is implemented using reusable classes located in:
+
+```text
+plugins/training/services/classes/
+```
+
+The main logging helper is:
+
+```text
+AuditLogger.php
+```
+
+`AuditLogger` is responsible for creating Audit Log entries consistently.
+
+A reusable event registration class is also used:
+
+```text
+AuditEventRegistrar.php
+```
+
+The plugin registers the audit events from its `boot()` method:
+
+```php
+AuditEventRegistrar::register();
+```
+
+The event registrar listens for meaningful model lifecycle events for the tracked modules and sends the resulting administrative activity to `AuditLogger`.
+
+This approach keeps audit logic centralized instead of duplicating Audit Log creation code inside individual backend controllers.
+
+It also makes the implementation easier to maintain and allows additional modules to be added to the auditing system later.
+
+---
+
+## Backend Audit Log Screen
+
+A dedicated Audit section was added to the October CMS backend.
+
+Authorized users can access:
+
+```text
+Audit → Audit Log
+```
+
+The Audit Log list displays:
+
+- Date / Time
+- User
+- Action
+- Module
+- Record ID
+- Description
+
+Audit records are sorted with the newest administrative activity first.
+
+The screen is intended for administrative review and does not provide normal content-management controls.
+
+---
+
+## Audit Log Details View
+
+Selecting an Audit Log entry opens a read-only details view.
+
+The details screen displays:
+
+- Date / Time
+- User
+- Backend User ID
+- Action
+- Module
+- Record ID
+- Description
+- Metadata
+
+Metadata is converted into a readable representation for administrative review.
+
+For example, a Document publication-status change can contain:
+
+```json
+{
+    "old_status": "draft",
+    "new_status": "published"
+}
+```
+
+The details page does not provide controls for editing the Audit Log entry.
+
+---
+
+## Audit Log Filters
+
+The Audit Log provides filters for Action and Module.
+
+### Action Filter
+
+Available action values include:
+
+- Create
+- Update
+- Delete
+- Status Change
+
+### Module Filter
+
+Available module values include:
+
+- Service
+- Document
+
+The filters can be used individually or combined.
+
+For example:
+
+```text
+Action = Status Change
+Module = Document
+```
+
+returns only matching Document status-change activity.
+
+A search field is also available for searching Audit Log entries.
+
+---
+
+## Audit Log Access Control
+
+Audit Log access is protected at both the navigation and controller levels.
+
+The backend navigation checks whether the current user has:
+
+```text
+training.services.review_audit_logs
+```
+
+The Audit Log controller declares the same required permission.
+
+This means hiding the Audit navigation item is not the only protection.
+
+A restricted non-superuser account assigned to the Content Editor role was tested by directly requesting:
+
+```text
+/admin/training/services/auditlogs
+```
+
+The request was rejected with:
+
+```text
+ACCESS DENIED
+You don't have the required permissions to view this page.
+```
+
+This verifies that direct URL access is also permission-protected.
+
+---
+
+## Audit Integrity
+
+Audit records are treated as read-only administrative history.
+
+For this training implementation, manual modification and manual deletion of Audit Log entries are disabled.
+
+The Audit Log list does not provide:
+
+- Create controls
+- Edit controls
+- Delete controls
+- Bulk-selection checkboxes
+
+Audit Log records are opened using a read-only preview/details screen.
+
+The normal create and update controller routes are also prevented from being used to modify Audit Log records.
+
+For example, attempting to access an Audit Log update route redirects the user back to the Audit Log list rather than opening an editable content form.
+
+This approach was selected to protect the integrity of the administrative history and prevent normal backend users from modifying or removing previously recorded administrative activity.
+
+---
+
+## Audit Retention Policy
+
+For this training implementation, Audit Log records are retained unless they are intentionally removed through a maintenance or development process outside the normal Audit Log backend interface.
+
+No automatic retention expiration is currently configured.
+
+Manual deletion through the normal Audit Log interface is disabled.
+
+This provides a persistent administrative history appropriate for the scope of the training project.
+
+---
+
+## Deleted Record Information
+
+Audit descriptions are designed to remain meaningful even when the original content record no longer exists.
+
+For example:
+
+```text
+Deleted service: Task 27 Audit Test 2
+```
+
+and:
+
+```text
+Deleted document: Task 27 Audit Document
+```
+
+remain stored in the Audit Log after the corresponding Service or Document has been deleted.
+
+The Audit Log therefore does not depend on the original record continuing to exist in order to provide a useful description of the historical activity.
+
+---
+
+## Sensitive Data Protection
+
+Audit metadata is sanitized before being stored.
+
+The Audit Logger removes sensitive metadata fields rather than storing their values.
+
+Protected information includes values associated with:
+
+- Passwords
+- Password confirmation values
+- Authentication tokens
+- Access tokens
+- Refresh tokens
+- API keys
+- Secrets
+- Session information
+- Authorization information
+- Cookies
+- Private keys
+- Client secrets
+- Private environment values
+- Uploaded file contents
+
+Sensitive-key detection is case-insensitive and applies recursively to nested metadata arrays.
+
+For example, metadata containing keys such as:
+
+```text
+password
+api_key
+nested.access_token
+```
+
+is sanitized before the Audit Log entry is stored.
+
+Safe metadata is preserved while sensitive fields and their values are excluded.
+
+Uploaded document contents are not stored in the Audit Log. Only selected safe metadata describing administrative activity is recorded.
+
+---
+
+## End-to-End Testing
+
+The Task 27 implementation was tested end-to-end.
+
+### Service Testing
+
+The following operations were tested:
+
+1. Create a Service.
+2. Update the Service.
+3. Change the Service active status.
+4. Delete the Service.
+
+Corresponding Audit Log entries were successfully generated for:
+
+```text
+Create
+Update
+Status Change
+Delete
+```
+
+The deleted Service remained identifiable through its human-readable Audit Log description.
+
+### Document Testing
+
+The following operations were tested:
+
+1. Create a Document.
+2. Update the Document.
+3. Change the Document status from draft to published.
+4. Delete the Document.
+
+Corresponding Audit Log entries were successfully generated for:
+
+```text
+Create
+Update
+Status Change
+Delete
+```
+
+This verifies activity tracking across a second content module.
+
+### User and Timestamp Verification
+
+Generated Audit Log records were verified to contain:
+
+- Backend user ID
+- Backend user name
+- Action
+- Module
+- Record ID
+- Human-readable description
+- Date and time
+
+### Filter Verification
+
+The Action and Module filters were tested individually and together.
+
+For example:
+
+```text
+Action = Status Change
+Module = Document
+```
+
+correctly returned only the matching Document status-change record.
+
+### Permission Verification
+
+A non-superuser Content Editor account without the `Review Audit Log` permission was tested.
+
+The Audit navigation was unavailable to the restricted role, and direct access to the Audit Log URL was denied.
+
+### Sensitive Metadata Verification
+
+The sanitization mechanism was tested using safe and sensitive metadata, including nested values.
+
+Sensitive values associated with passwords, API keys, and access tokens were removed before the Audit Log entry was stored.
+
+Safe metadata remained available in the resulting Audit Log entry.
+
+---
+
+## Database Migration
+
+The Audit Log table is created through the plugin migration:
+
+```text
+plugins/training/services/updates/create_audit_logs_table.php
+```
+
+The migration is registered in:
+
+```text
+plugins/training/services/updates/version.yaml
+```
+
+For the October CMS version used by this project, pending plugin migrations can be applied using:
+
+```bash
+php artisan october:migrate
+```
+
+The Task 27 Audit Log migration was successfully applied using this command.
+
+---
+
+## Main Task 27 Files
+
+The main files involved in Task 27 include:
+
+```text
+plugins/training/services/
+├── Plugin.php
+│
+├── classes/
+│   ├── AuditLogger.php
+│   └── AuditEventRegistrar.php
+│
+├── models/
+│   ├── AuditLog.php
+│   └── auditlog/
+│       ├── columns.yaml
+│       └── fields.yaml
+│
+├── controllers/
+│   ├── AuditLogs.php
+│   └── auditlogs/
+│       ├── config_form.yaml
+│       ├── config_list.yaml
+│       ├── config_filter.yaml
+│       └── preview.php
+│
+└── updates/
+    ├── create_audit_logs_table.php
+    └── version.yaml
+```
+
+---
+
+## Task 27 Verification Evidence
+
+The following screenshots were captured as verification evidence for the implementation:
+
+```text
+Task27_Role_Permissions.png
+Task27_Audit_Log_List.png
+Task27_Audit_Log_Details.png
+Task27_Audit_Filters.png
+Task27_Audit_Access_Denied.png
+```
+
+The evidence demonstrates:
+
+- Audit permission configuration
+- Read-only Audit Log list
+- Audit Log details and metadata
+- Create, Update, Delete, and Status Change history
+- Action and Module filtering
+- Restricted-role access denial
+
+---
+
+## Task 27 Result
+
+Task 27 adds a permission-controlled administrative Audit Log system to the existing October CMS project.
+
+The completed implementation provides:
+
+- Practical backend roles and permissions
+- Dedicated Audit Log access permission
+- Reusable administrative activity logging
+- Service activity tracking
+- Document activity tracking
+- Create activity auditing
+- Update activity auditing
+- Delete activity auditing
+- Status and publication-change auditing
+- Backend user tracking
+- Timestamp tracking
+- Human-readable activity descriptions
+- Read-only Audit Log list
+- Read-only Audit Log details
+- Action filtering
+- Module filtering
+- Direct URL permission protection
+- Audit integrity protection
+- Audit retention documentation
+- Meaningful deleted-record descriptions
+- Recursive sensitive metadata sanitization
+- End-to-end permission and activity verification
+
+The implementation preserves the existing project functionality while adding controlled administrative visibility, accountability, and traceability.
