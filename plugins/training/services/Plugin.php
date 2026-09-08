@@ -61,6 +61,11 @@ class Plugin extends PluginBase
                 'tab' => 'Documents',
                 'label' => 'Manage Documents',
             ],
+
+            'training.services.review_audit_logs' => [
+                'tab' => 'Audit',
+                'label' => 'Review Audit Log',
+            ],
         ];
     }
 
@@ -102,6 +107,10 @@ class Plugin extends PluginBase
 
         $canManageDocuments = $user->hasAccess(
             'training.services.manage_documents'
+        );
+
+        $canReviewAuditLogs = $user->hasAccess(
+            'training.services.review_audit_logs'
         );
 
         $navigation = [];
@@ -279,6 +288,34 @@ class Plugin extends PluginBase
                             'training.services.manage_document_categories',
                         ],
                         'order' => 200,
+                    ],
+                ],
+            ];
+        }
+
+        if ($canReviewAuditLogs) {
+            $navigation['audit'] = [
+                'label' => 'Audit',
+                'url' => Backend::url(
+                    'training/services/auditlogs'
+                ),
+                'icon' => 'icon-history',
+                'order' => 800,
+                'permissions' => [
+                    'training.services.review_audit_logs',
+                ],
+
+                'sideMenu' => [
+                    'auditlogs' => [
+                        'label' => 'Audit Log',
+                        'url' => Backend::url(
+                            'training/services/auditlogs'
+                        ),
+                        'icon' => 'icon-list-alt',
+                        'permissions' => [
+                            'training.services.review_audit_logs',
+                        ],
+                        'order' => 100,
                     ],
                 ],
             ];

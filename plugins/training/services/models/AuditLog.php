@@ -21,4 +21,20 @@ class AuditLog extends Model
         'module' => 'required|max:100',
         'description' => 'required|string',
     ];
+
+    public function getMetadataDisplayAttribute(): string
+    {
+        if (empty($this->metadata)) {
+            return '-';
+        }
+
+        if (is_array($this->metadata)) {
+            return json_encode(
+                $this->metadata,
+                JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES
+            );
+        }
+
+        return (string) $this->metadata;
+    }
 }

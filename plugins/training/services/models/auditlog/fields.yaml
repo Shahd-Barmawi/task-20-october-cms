@@ -1,8 +1,48 @@
 # ===================================
-#  Form Field Definitions
+#  Audit Log Field Definitions
 # ===================================
 
 fields:
-    id:
-        label: ID
+    created_at:
+        label: Date / Time
+        type: datepicker
+        mode: datetime
         disabled: true
+        span: left
+
+    backend_user_name:
+        label: User
+        disabled: true
+        span: right
+
+    action:
+        label: Action
+        disabled: true
+        span: left
+
+    module:
+        label: Module
+        disabled: true
+        span: right
+
+    record_id:
+        label: Record ID
+        disabled: true
+        span: left
+
+    backend_user_id:
+        label: Backend User ID
+        disabled: true
+        span: right
+
+    description:
+        label: Description
+        type: textarea
+        disabled: true
+        size: small
+
+    metadata_display:
+        label: Metadata
+        type: textarea
+        disabled: true
+        size: large

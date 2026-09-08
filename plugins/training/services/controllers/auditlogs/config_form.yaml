@@ -1,0 +1,15 @@
+# ===================================
+#  Audit Log Form Behavior Config
+# ===================================
+
+name: Audit Log Entry
+
+form: $/training/services/models/auditlog/fields.yaml
+
+modelClass: Training\Services\Models\AuditLog
+
+defaultRedirect: training/services/auditlogs
+
+preview:
+    title: Audit Log Details
+    

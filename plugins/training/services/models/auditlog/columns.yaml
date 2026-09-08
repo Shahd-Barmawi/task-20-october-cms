@@ -1,8 +1,32 @@
 # ===================================
-#  List Column Definitions
+#  Audit Log Column Definitions
 # ===================================
 
 columns:
-    id:
-        label: ID
+    created_at:
+        label: Date / Time
+        type: datetime
+        sortable: true
+
+    backend_user_name:
+        label: User
+        searchable: true
+        sortable: true
+
+    action:
+        label: Action
+        searchable: true
+        sortable: true
+
+    module:
+        label: Module
+        searchable: true
+        sortable: true
+
+    record_id:
+        label: Record ID
+        sortable: true
+
+    description:
+        label: Description
         searchable: true
