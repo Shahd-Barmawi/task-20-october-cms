@@ -26,42 +26,9 @@ class Reports extends Controller
     {
         $this->pageTitle = 'Reports';
 
-        $dateFrom = trim((string) input('date_from'));
-        $dateTo = trim((string) input('date_to'));
-        $module = trim((string) input('module'));
-        $action = trim((string) input('action'));
+        $filters = $this->getFilters();
 
-        $query = AuditLog::query();
-
-        if ($dateFrom !== '') {
-            $query->whereDate(
-                'created_at',
-                '>=',
-                $dateFrom
-            );
-        }
-
-        if ($dateTo !== '') {
-            $query->whereDate(
-                'created_at',
-                '<=',
-                $dateTo
-            );
-        }
-
-        if ($module !== '') {
-            $query->where(
-                'module',
-                $module
-            );
-        }
-
-        if ($action !== '') {
-            $query->where(
-                'action',
-                $action
-            );
-        }
+        $query = $this->buildFilteredQuery($filters);
 
         /*
          * Summary values must reflect
@@ -89,22 +56,12 @@ class Reports extends Controller
         $this->vars['reportRows'] = $query
             ->orderBy('created_at', 'desc')
             ->paginate(10)
-            ->appends([
-                'date_from' => $dateFrom,
-                'date_to' => $dateTo,
-                'module' => $module,
-                'action' => $action,
-            ]);
+            ->appends($filters);
 
         /*
          * Current filter values.
          */
-        $this->vars['filters'] = [
-            'date_from' => $dateFrom,
-            'date_to' => $dateTo,
-            'module' => $module,
-            'action' => $action,
-        ];
+        $this->vars['filters'] = $filters;
 
         /*
          * Dropdown options from real Audit Log data.
@@ -122,5 +79,143 @@ class Reports extends Controller
             ->distinct()
             ->orderBy('action')
             ->pluck('action');
+    }
+
+    /*
+     * CSV Export
+     */
+    public function export()
+    {
+        $filters = $this->getFilters();
+
+        $query = $this->buildFilteredQuery($filters)
+            ->orderBy('created_at', 'desc');
+
+        $filename = 'audit-report-' . date('Y-m-d-His') . '.csv';
+
+        return response()->streamDownload(
+            function () use ($query) {
+
+                $handle = fopen('php://output', 'w');
+
+                /*
+                 * UTF-8 BOM for Excel compatibility.
+                 */
+                fwrite($handle, "\xEF\xBB\xBF");
+
+                /*
+                 * Clear column headings.
+                 */
+                fputcsv($handle, [
+                    'Date / Time',
+                    'User',
+                    'Action',
+                    'Module',
+                    'Record ID',
+                    'Description',
+                ]);
+
+                /*
+                 * Stream records instead of loading
+                 * the full result set into memory.
+                 */
+                foreach ($query->cursor() as $row) {
+
+                    fputcsv($handle, [
+                        $row->created_at
+                            ? $row->created_at->format('Y-m-d H:i:s')
+                            : '',
+
+                        $row->backend_user_name
+                            ?? 'System',
+
+                        ucfirst(
+                            $row->action
+                                ?? 'Unknown'
+                        ),
+
+                        $row->module
+                            ?? 'Unknown',
+
+                        $row->record_id
+                            ?? '',
+
+                        $row->description
+                            ?? '',
+                    ]);
+                }
+
+                fclose($handle);
+            },
+            $filename,
+            [
+                'Content-Type' => 'text/csv; charset=UTF-8',
+            ]
+        );
+    }
+
+    /*
+     * Get current report filters.
+     */
+    private function getFilters(): array
+    {
+        return [
+            'date_from' => trim(
+                (string) input('date_from')
+            ),
+
+            'date_to' => trim(
+                (string) input('date_to')
+            ),
+
+            'module' => trim(
+                (string) input('module')
+            ),
+
+            'action' => trim(
+                (string) input('action')
+            ),
+        ];
+    }
+
+    /*
+     * Apply report filters directly
+     * to the database query.
+     */
+    private function buildFilteredQuery(array $filters)
+    {
+        $query = AuditLog::query();
+
+        if ($filters['date_from'] !== '') {
+            $query->whereDate(
+                'created_at',
+                '>=',
+                $filters['date_from']
+            );
+        }
+
+        if ($filters['date_to'] !== '') {
+            $query->whereDate(
+                'created_at',
+                '<=',
+                $filters['date_to']
+            );
+        }
+
+        if ($filters['module'] !== '') {
+            $query->where(
+                'module',
+                $filters['module']
+            );
+        }
+
+        if ($filters['action'] !== '') {
+            $query->where(
+                'action',
+                $filters['action']
+            );
+        }
+
+        return $query;
     }
 }
