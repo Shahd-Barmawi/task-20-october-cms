@@ -2,6 +2,9 @@
 
 /** @var \October\Rain\Pagination\LengthAwarePaginator $reportRows */
 /** @var array $summary */
+/** @var array $filters */
+/** @var \Illuminate\Support\Collection $modules */
+/** @var \Illuminate\Support\Collection $actions */
 ?>
 
 <div class="layout">
@@ -17,6 +20,128 @@
                         across the CMS.
                     </p>
                 </div>
+            </div>
+
+            <!-- FILTERS -->
+            <div class="task28-report-filters-card">
+
+                <div class="task28-report-filters-header">
+                    <div>
+                        <h2>Report Filters</h2>
+
+                        <p>
+                            Narrow the report results using date,
+                            module and action filters.
+                        </p>
+                    </div>
+                </div>
+
+                <form
+                    method="get"
+                    action="<?= Backend::url('training/services/reports') ?>"
+                    class="task28-report-filters-form">
+
+                    <div class="task28-report-filter-group">
+                        <label for="task28-date-from">
+                            Date From
+                        </label>
+
+                        <input
+                            type="date"
+                            id="task28-date-from"
+                            name="date_from"
+                            value="<?= e($filters['date_from']) ?>"
+                            class="form-control">
+                    </div>
+
+                    <div class="task28-report-filter-group">
+                        <label for="task28-date-to">
+                            Date To
+                        </label>
+
+                        <input
+                            type="date"
+                            id="task28-date-to"
+                            name="date_to"
+                            value="<?= e($filters['date_to']) ?>"
+                            class="form-control">
+                    </div>
+
+                    <div class="task28-report-filter-group">
+                        <label for="task28-module">
+                            Module
+                        </label>
+
+                        <select
+                            id="task28-module"
+                            name="module"
+                            class="form-control">
+                            <option value="">
+                                All Modules
+                            </option>
+
+                            <?php foreach ($modules as $module): ?>
+
+                                <option
+                                    value="<?= e($module) ?>"
+                                    <?= $filters['module'] === $module
+                                        ? 'selected'
+                                        : '' ?>>
+                                    <?= e($module) ?>
+                                </option>
+
+                            <?php endforeach ?>
+                        </select>
+                    </div>
+
+                    <div class="task28-report-filter-group">
+                        <label for="task28-action">
+                            Action
+                        </label>
+
+                        <select
+                            id="task28-action"
+                            name="action"
+                            class="form-control">
+                            <option value="">
+                                All Actions
+                            </option>
+
+                            <?php foreach ($actions as $action): ?>
+
+                                <option
+                                    value="<?= e($action) ?>"
+                                    <?= $filters['action'] === $action
+                                        ? 'selected'
+                                        : '' ?>>
+                                    <?= e(ucfirst($action)) ?>
+                                </option>
+
+                            <?php endforeach ?>
+                        </select>
+                    </div>
+
+                    <div class="task28-report-filter-actions">
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary">
+                            <i class="icon-filter"></i>
+                            Apply Filters
+                        </button>
+
+                        <a
+                            href="<?= Backend::url(
+                                        'training/services/reports'
+                                    ) ?>"
+                            class="btn btn-default">
+                            <i class="icon-refresh"></i>
+                            Reset
+                        </a>
+
+                    </div>
+
+                </form>
             </div>
 
             <!-- SUMMARY CARDS -->
@@ -155,19 +280,17 @@
 
                     </div>
 
-                    <!-- PAGINATION -->
                     <div class="task28-report-pagination">
                         <?= $reportRows->render() ?>
                     </div>
 
                 <?php else: ?>
 
-                    <!-- EMPTY STATE -->
                     <div class="task28-report-empty">
                         <i class="icon-inbox"></i>
 
                         <span>
-                            No report records available.
+                            No report records match the active filters.
                         </span>
                     </div>
 
