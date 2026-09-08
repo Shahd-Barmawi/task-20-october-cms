@@ -377,3 +377,229 @@
         margin-left: auto;
     }
 }
+
+/* Administrative Reports */
+
+.task28-reports {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding-top: 30px;
+    padding-bottom: 50px;
+}
+
+.task28-reports-header {
+    margin-bottom: 28px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid #e5e8ec;
+}
+
+.task28-reports-header h1 {
+    margin: 0 0 8px;
+    color: #2c3440;
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.task28-reports-header p {
+    margin: 0;
+    color: #7b8490;
+    font-size: 14px;
+}
+
+.task28-report-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 28px;
+}
+
+.task28-report-summary-card {
+    position: relative;
+    padding: 20px 22px;
+    background: #fff;
+    border: 1px solid #e4e8ec;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(31, 43, 58, 0.06);
+    overflow: hidden;
+}
+
+.task28-report-summary-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 4px;
+    background: #6574cd;
+}
+
+.task28-report-summary-label {
+    display: block;
+    margin-bottom: 12px;
+    color: #7d8792;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.task28-report-summary-value {
+    display: block;
+    color: #252c34;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.task28-report-card {
+    background: #fff;
+    border: 1px solid #e4e8ec;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(31, 43, 58, 0.06);
+    overflow: hidden;
+}
+
+.task28-report-card-header {
+    padding: 20px 22px;
+    border-bottom: 1px solid #edf0f2;
+}
+
+.task28-report-card-header h2 {
+    margin: 0 0 6px;
+    color: #303842;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.task28-report-card-header p {
+    margin: 0;
+    color: #89929c;
+    font-size: 12px;
+}
+
+.task28-report-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.task28-report-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+}
+
+.task28-report-table thead {
+    background: #f7f8fa;
+}
+
+.task28-report-table th {
+    padding: 14px 16px;
+    border-bottom: 1px solid #dfe4e9;
+    color: #404853;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.task28-report-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #edf0f2;
+    color: #59636e;
+    font-size: 12px;
+    line-height: 1.45;
+    vertical-align: top;
+}
+
+.task28-report-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.task28-report-table tbody tr:hover {
+    background: #fafbfc;
+}
+
+.task28-report-table th:nth-child(1),
+.task28-report-table td:nth-child(1) {
+    min-width: 130px;
+}
+
+.task28-report-table th:nth-child(2),
+.task28-report-table td:nth-child(2) {
+    min-width: 130px;
+}
+
+.task28-report-table th:nth-child(3),
+.task28-report-table td:nth-child(3) {
+    min-width: 110px;
+}
+
+.task28-report-table th:nth-child(4),
+.task28-report-table td:nth-child(4) {
+    min-width: 120px;
+}
+
+.task28-report-table th:nth-child(5),
+.task28-report-table td:nth-child(5) {
+    min-width: 90px;
+}
+
+.task28-report-table th:nth-child(6),
+.task28-report-table td:nth-child(6) {
+    min-width: 280px;
+}
+
+.task28-report-pagination {
+    padding: 18px 22px;
+    border-top: 1px solid #edf0f2;
+    background: #fafbfc;
+}
+
+.task28-report-pagination ul {
+    margin: 0;
+}
+
+.task28-report-empty {
+    display: flex;
+    min-height: 180px;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 30px;
+    color: #929aa3;
+    font-size: 13px;
+}
+
+.task28-report-empty i {
+    font-size: 19px;
+}
+
+@media (max-width: 1100px) {
+    .task28-report-summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 700px) {
+    .task28-reports {
+        padding-top: 20px;
+    }
+
+    .task28-reports-header h1 {
+        font-size: 25px;
+    }
+
+    .task28-report-summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .task28-report-card-header {
+        padding: 18px;
+    }
+
+    .task28-report-table th,
+    .task28-report-table td {
+        padding: 12px;
+    }
+}

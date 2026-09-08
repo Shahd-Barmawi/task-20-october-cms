@@ -71,6 +71,11 @@ class Plugin extends PluginBase
                 'tab' => 'Dashboard',
                 'label' => 'View Administrative Dashboard',
             ],
+
+            'training.services.view_reports' => [
+                'tab' => 'Reports',
+                'label' => 'View Administrative Reports',
+            ],
         ];
     }
 
@@ -122,6 +127,10 @@ class Plugin extends PluginBase
             'training.services.view_dashboard'
         );
 
+        $canViewReports = $user->hasAccess(
+            'training.services.view_reports'
+        );
+
         $navigation = [];
 
         if ($canViewDashboard) {
@@ -134,6 +143,20 @@ class Plugin extends PluginBase
                 'order' => 400,
                 'permissions' => [
                     'training.services.view_dashboard',
+                ],
+            ];
+        }
+
+        if ($canViewReports) {
+            $navigation['reports'] = [
+                'label' => 'Reports',
+                'url' => Backend::url(
+                    'training/services/reports'
+                ),
+                'icon' => 'icon-bar-chart',
+                'order' => 450,
+                'permissions' => [
+                    'training.services.view_reports',
                 ],
             ];
         }
