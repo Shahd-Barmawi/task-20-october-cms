@@ -25,6 +25,27 @@
             </li>
 
             <li>
+                <a href="/pages/career-development"
+                   class="{{ this.page.id == 'dynamic-page' and this.param.slug == 'career-development' ? 'active' : '' }}">
+                    Career
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ 'blog'|page }}"
+                   class="{{ this.page.id == 'blog' or this.page.id == 'blog-details' ? 'active' : '' }}">
+                    Blog & News
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ 'documents'|page }}"
+                   class="{{ this.page.id == 'documents' ? 'active' : '' }}">
+                    Documents
+                </a>
+            </li>
+
+            <li>
                 <a href="{{ 'contact'|page }}"
                    class="{{ this.page.id == 'contact' ? 'active' : '' }}">
                     Contact

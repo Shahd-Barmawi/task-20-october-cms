@@ -1,8 +1,166 @@
-title = "Blog Details"
-url = "/blog/:slug"
+title = "About"
+url = "/about"
 layout = "default"
-
-[blogDetails]
-slug = "{{ :slug }}"
 ==
-{% component 'blogDetails' %}
+<section class="page-section about-page">
+    <div class="container">
+
+        <div class="about-hero">
+            <span class="about-badge">About Training CMS</span>
+
+            <h1>Helping Learners Discover the Right Training Opportunities</h1>
+
+            <p class="about-intro">
+                Training CMS is a centralized platform designed to organize and present
+                training services, educational content, news, and useful resources in
+                a simple and accessible way.
+            </p>
+        </div>
+
+        <div class="about-grid">
+
+            <div class="about-card">
+                <h2>Our Mission</h2>
+
+                <p>
+                    Our mission is to make training information easier to discover,
+                    manage, and access. The platform provides visitors with a clear
+                    way to explore available training services, learn about programs,
+                    read relevant news, and access useful documents.
+                </p>
+            </div>
+
+            <div class="about-card">
+                <h2>What We Offer</h2>
+
+                <p>
+                    Training CMS brings different types of training-related content
+                    together in one place, providing both visitors and administrators
+                    with an organized and reliable experience.
+                </p>
+            </div>
+
+        </div>
+
+        <div class="about-section">
+            <div class="section-heading">
+                <span>Platform Features</span>
+                <h2>Everything You Need in One Place</h2>
+
+                <p>
+                    The platform includes several integrated features designed to
+                    improve content management and make information easy to access.
+                </p>
+            </div>
+
+            <div class="features-grid">
+
+                <div class="feature-card">
+                    <h3>Training Services</h3>
+                    <p>
+                        Explore available training services and learn more about each
+                        program through detailed service pages.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Dynamic Pages</h3>
+                    <p>
+                        Access flexible informational pages that allow important
+                        training-related content to be published and updated easily.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Blog & News</h3>
+                    <p>
+                        Stay informed through published articles, training updates,
+                        and educational news.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Document Library</h3>
+                    <p>
+                        Browse and download published documents and useful resources
+                        from an organized public library.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Contact & Communication</h3>
+                    <p>
+                        Visitors can send inquiries through the public contact form,
+                        while administrators can manage messages from the backend.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Secure Administration</h3>
+                    <p>
+                        The backend includes permission-controlled access, activity
+                        tracking, reporting, and dashboard tools for administrators.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="about-section why-section">
+
+            <div>
+                <span class="section-label">Why Training CMS?</span>
+
+                <h2>Designed for Simplicity, Organization, and Reliability</h2>
+
+                <p>
+                    The system separates public content from administrative tools while
+                    keeping all training information connected within one platform.
+                    This helps administrators manage information efficiently while
+                    visitors receive a clean and easy-to-use experience.
+                </p>
+            </div>
+
+            <div class="about-points">
+                <div class="about-point">
+                    <strong>Organized Content</strong>
+                    <span>Services, pages, articles, and documents are managed from one system.</span>
+                </div>
+
+                <div class="about-point">
+                    <strong>Easy Access</strong>
+                    <span>Visitors can quickly reach training information and resources.</span>
+                </div>
+
+                <div class="about-point">
+                    <strong>Reliable Management</strong>
+                    <span>Administrative tools help monitor content, reports, and system activity.</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="about-cta">
+            <div>
+                <span>Start Exploring</span>
+                <h2>Discover Our Training Content</h2>
+
+                <p>
+                    Explore our training pages, read the latest news, or contact us
+                    if you need more information.
+                </p>
+            </div>
+
+            <div class="about-cta-actions">
+                <a href="/pages/about-training" class="btn-primary">
+                    Explore Training
+                </a>
+
+                <a href="{{ 'contact'|page }}" class="btn-secondary">
+                    Contact Us
+                </a>
+            </div>
+        </div>
+
+    </div>
+</section>

@@ -14,19 +14,21 @@ This document records the findings identified during the final QA, security, per
 
 | 4 | The Dynamic Pages search field has a UI layout issue: the search icon overlaps the placeholder text, reducing readability and usability. | Dynamic Pages | Low | Remaining | Adjust the backend list search control spacing/width so the placeholder text and search icon display correctly. |
 
-| 5 | Published Dynamic Pages are accessible only by manually entering their URL; there is no public navigation link or discoverable entry point leading users to these pages. | Dynamic Pages / Public Navigation | Medium | Remaining | Add a clear navigation or public listing entry point for published Dynamic Pages so users can reach them without knowing the direct URL. |
+| 5 | Published Dynamic Pages were accessible only by manually entering their URL; there was no public navigation link or discoverable entry point. | Dynamic Pages / Public Navigation | Medium | Fixed | Added clear public navigation links for published Dynamic Pages and re-tested them successfully. |
 
-| 6 | The public Blog & News page is accessible by direct URL but is not linked from the main public navigation, making the feature difficult for users to discover. | Blog / Public Navigation | Medium | Remaining | Add a Blog/News navigation item or another clear public entry point to the Blog & News page. |
+| 6 | The public Blog & News page was accessible by direct URL but was not linked from the main public navigation. | Blog / Public Navigation | Medium | Fixed | Added a Blog & News item to the main public navigation and verified that it opens the correct public Blog page. |
 
 | 7 | The Blog Categories search field has a UI layout issue: the search icon overlaps the placeholder text, reducing readability and usability. | Blog Categories | Low | Remaining | Adjust the backend search control spacing/width so the placeholder text and search icon display correctly. |
 
 | 8 | The Documents search field has a UI layout issue: the search icon overlaps the placeholder text, reducing readability and usability. | Documents | Low | Remaining | Adjust the backend search control spacing/width so the placeholder text and search icon display correctly. |
 
-| 9 | The public Document Library is accessible by direct URL but is not linked from the main public navigation, making the document feature difficult for users to discover. | Documents / Public Navigation | Medium | Remaining | Add a Documents/Resources navigation item or another clear public entry point to the Document Library. |
+| 9 | The public Document Library was accessible by direct URL but was not linked from the main public navigation. | Documents / Public Navigation | Medium | Fixed | Added a Documents item to the main public navigation and verified that it opens the public Document Library successfully. |
 
 | 10 | The Document Categories search field has a UI layout issue: the search icon overlaps the placeholder text, reducing readability and usability. | Document Categories | Low | Remaining | Adjust the backend search control spacing/width so the placeholder text and search icon display correctly. |
 
-| 11 | The About link in the public navigation points to `/blog/default` and returns a Page Not Found error instead of opening the About page. | Public Website / Navigation | Medium | Remaining | Correct the About navigation URL so it points to the intended public About page, then re-test the link. |
+| 11 | The About link in the public navigation pointed to an incorrect destination and returned a Page Not Found error. | Public Website / Navigation | Medium | Fixed | Corrected the About page configuration and navigation link. Re-testing confirmed that `/about` now opens the intended About page successfully. |
+
+| 12 | The "View Services" button on the public Training page redirects users to `/services`, which returns a Page Not Found error. | Public Website / Training Navigation | Medium | Remaining | Update the button target so it points to the correct public services destination, then re-test the link. |
 
 ## Regression Testing Checklist
 
@@ -76,7 +78,7 @@ This document records the findings identified during the final QA, security, per
 - [x] Draft page public visibility tested.
 - [x] Unknown slug/not-found behavior tested.
 - [x] Required-field validation tested.
-- [ ] Public navigation/discoverability fixed and re-tested.
+- [x] Public navigation/discoverability fixed and re-tested.
 
 ### Blog
 
@@ -178,7 +180,7 @@ This document records the findings identified during the final QA, security, per
 - [x] Broken/incorrect navigation links reviewed.
 - [x] Mobile responsive behavior reviewed.
 - [x] Public mobile responsive evidence captured.
-- [ ] Known navigation findings fixed and re-tested.
+- [x] Known navigation findings fixed and re-tested.
 - [ ] Full missing-image/file review completed.
 - [ ] Empty/no-results states fully reviewed.
 - [ ] Desktop responsive behavior fully reviewed.
@@ -263,6 +265,14 @@ Important High and Medium severity findings must be re-tested after fixing them 
 | Finding # | Re-Test Result | Notes
 
 | 3 | Passed | Re-tested the public Contact form using `test@invalid`. The form correctly rejected the invalid email and displayed: `Please enter a valid email address.` |
+
+| 5 | Passed | Published Dynamic Pages are now reachable through visible public navigation links and were re-tested successfully. |
+
+| 6 | Passed | The Blog & News navigation item was added and verified to open the correct public Blog page. |
+
+| 9 | Passed | The Documents navigation item was added and verified to open the public Document Library successfully. |
+
+| 11 | Passed | The About page configuration and navigation link were corrected. `/about` now opens the intended page without a 404 error. |
 
 ## Known Remaining Issues / Limitations
 
