@@ -3470,3 +3470,584 @@ The completed implementation provides:
 - End-to-end permission and activity verification
 
 The implementation preserves the existing project functionality while adding controlled administrative visibility, accountability, and traceability.
+
+# Task 28 - Administrative Dashboard, Reports & Data Export
+
+## Overview
+
+Task 28 extends the existing October CMS project with an Administrative Dashboard and reporting functionality. The implementation uses real data from the existing Services, Blog Posts, Documents, Contact Messages, Dynamic Pages, and Audit Log modules.
+
+The task includes KPI cards, recent activity sections, filtered administrative reports, dynamic summary values, detailed paginated results, CSV export, permission control, performance considerations, edge-state handling, and responsive usability.
+
+---
+
+## Administrative Dashboard
+
+A dedicated backend Administrative Dashboard was implemented to provide administrators with a quick operational overview of the CMS.
+
+### Dashboard KPIs
+
+The Dashboard includes eight KPI cards:
+
+1. Published Blog Posts
+2. Draft Blog Posts
+3. Total Documents
+4. Published Documents
+5. New Contact Messages
+6. Published Dynamic Pages
+7. Total Services
+8. Active Services
+
+### KPI Data Sources
+
+| KPI                     | Data Source      | Calculation                      |
+| ----------------------- | ---------------- | -------------------------------- |
+| Published Blog Posts    | `BlogPost`       | Count where `status = published` |
+| Draft Blog Posts        | `BlogPost`       | Count where `status = draft`     |
+| Total Documents         | `Document`       | Total document count             |
+| Published Documents     | `Document`       | Count where `status = published` |
+| New Contact Messages    | `ContactMessage` | Count where `status = new`       |
+| Published Dynamic Pages | `Page`           | Count where `status = published` |
+| Total Services          | `Service`        | Total service count              |
+| Active Services         | `Service`        | Count where `is_active = true`   |
+
+KPI calculations use database-level `count()` queries instead of loading complete datasets into memory.
+
+---
+
+## Recent Activity Sections
+
+The Dashboard includes two recent-data sections.
+
+### Latest Contact Messages
+
+Displays the five most recently received Contact Messages.
+
+The query is limited to five records and ordered from newest to oldest. A **View All** action provides direct access to the complete Contact Messages backend section.
+
+### Recent Audit Log Activities
+
+Displays the five most recent administrative Audit Log activities.
+
+The query is limited to five records and ordered from newest to oldest. A **View All** action provides direct access to the complete Audit Log backend section.
+
+---
+
+## Administrative Reports
+
+A separate Administrative Reports backend page was implemented using real Audit Log data.
+
+The report allows administrators to analyze administrative activity rather than only viewing static totals.
+
+### Report Columns
+
+The detailed Audit Activity Report includes:
+
+- Date / Time
+- User
+- Action
+- Module
+- Record ID
+- Description
+
+Report records are ordered from newest to oldest.
+
+---
+
+## Report Filters
+
+The Administrative Reports page supports four server-side filters:
+
+- Date From
+- Date To
+- Module
+- Action
+
+The filters are applied directly to the database query.
+
+Module and Action dropdown options are dynamically retrieved from existing Audit Log data.
+
+A **Reset** action is also available to clear all active filters.
+
+### Date Filter Handling
+
+The report supports:
+
+- Date From and Date To together
+- Date From only
+- Date To only
+- No date filter
+
+Invalid date ranges are handled explicitly.
+
+If `Date From` is later than `Date To`, the page displays:
+
+> Invalid date range. Date From cannot be later than Date To.
+
+This prevents an invalid range from producing misleading report results.
+
+---
+
+## Summary Results
+
+The Reports page contains four summary cards:
+
+- Total Records
+- Create Actions
+- Update Actions
+- Delete Actions
+
+All summary values are calculated from the currently filtered result set.
+
+Changing the Date, Module, or Action filters therefore updates both the detailed report results and the summary values.
+
+For example, filtering by:
+
+```text
+Module = Document
+Action = Create
+```
+
+returned one matching record during testing, with:
+
+```text
+Total Records = 1
+Create Actions = 1
+Update Actions = 0
+Delete Actions = 0
+```
+
+---
+
+## Detailed Report Table
+
+The filtered Audit Log results are displayed in a detailed table.
+
+The report uses pagination with ten records per page:
+
+```php
+->paginate(10)
+```
+
+Active filter values are preserved in pagination links.
+
+Pagination was tested with more than ten Audit Log records and correctly produced multiple report pages.
+
+---
+
+## Empty Report State
+
+If no records match the selected filters, the Reports page displays a clear empty state:
+
+> No report records match the active filters.
+
+The summary cards also correctly display zero values when the filtered result set is empty.
+
+---
+
+## CSV Export
+
+The Audit Activity Report includes an **Export CSV** action.
+
+The exported CSV respects the currently active report filters and contains only the matching report records.
+
+### Exported Columns
+
+The CSV includes:
+
+- Date / Time
+- User
+- Action
+- Module
+- Record ID
+- Description
+
+Only relevant report fields are exported. Sensitive information such as passwords, credentials, tokens, session information, or private environment values is not included.
+
+### CSV Filename
+
+A meaningful timestamped filename is generated for each export, for example:
+
+```text
+audit-report-2026-09-08-144307.csv
+```
+
+### Filtered Export
+
+The CSV export reuses the same server-side filtering logic as the Reports page.
+
+For example, when these filters are active:
+
+```text
+Module = Document
+Action = Create
+```
+
+the exported CSV contains only Audit Log records matching both filters.
+
+The exported CSV was manually opened in Excel and its headings and filtered contents were verified.
+
+### Export Performance
+
+The export uses:
+
+```php
+$query->cursor()
+```
+
+to stream records instead of loading the complete result set into memory.
+
+This makes the export more memory-efficient for larger result sets.
+
+---
+
+## Permission Control
+
+Dedicated backend permissions protect the Administrative Dashboard and Reports page.
+
+### Dashboard Permission
+
+```text
+training.services.view_dashboard
+```
+
+Permission label:
+
+```text
+View Administrative Dashboard
+```
+
+The Dashboard controller enforces the permission using:
+
+```php
+public $requiredPermissions = [
+    'training.services.view_dashboard',
+];
+```
+
+### Reports Permission
+
+```text
+training.services.view_reports
+```
+
+Permission label:
+
+```text
+View Administrative Reports
+```
+
+The Reports controller enforces the permission using:
+
+```php
+public $requiredPermissions = [
+    'training.services.view_reports',
+];
+```
+
+Navigation visibility also respects these permissions.
+
+Permission control was manually tested using a restricted backend user without the Dashboard and Reports permissions.
+
+The restricted user was unable to access either page through direct backend URLs and received an **Access Denied** response.
+
+---
+
+## Query and Performance Considerations
+
+The Dashboard and Reports implementation was reviewed to avoid unnecessary data loading and obvious N+1 query patterns.
+
+### Dashboard KPI Queries
+
+KPI values use database-level aggregate `count()` queries instead of retrieving full model collections.
+
+Examples include:
+
+```php
+Document::count();
+```
+
+and:
+
+```php
+Document::where('status', 'published')->count();
+```
+
+### Recent Activity Queries
+
+Recent activity sections retrieve only the records required by the Dashboard:
+
+```php
+->orderBy('created_at', 'desc')
+->limit(5)
+->get();
+```
+
+This prevents unnecessary loading of complete Contact Message or Audit Log datasets.
+
+### Report Queries
+
+Report filters are applied directly to the Audit Log database query before results are retrieved.
+
+Detailed report results use:
+
+```php
+->paginate(10)
+```
+
+instead of loading the complete Audit Log dataset into memory.
+
+### CSV Export
+
+CSV export uses:
+
+```php
+$query->cursor()
+```
+
+to stream matching records.
+
+This avoids loading the entire export result set into memory at once.
+
+No relationship loop that produces an obvious N+1 query pattern is used by the Dashboard or Audit Activity Report.
+
+---
+
+## Data Accuracy Testing
+
+Dashboard and report values were manually compared with their corresponding backend records.
+
+### Documents
+
+The Dashboard displayed:
+
+```text
+Total Documents = 8
+Published Documents = 7
+```
+
+The Documents backend contained eight records in total, with seven published documents and one draft document.
+
+The Dashboard values matched the stored data.
+
+### Services
+
+The Dashboard displayed:
+
+```text
+Total Services = 5
+Active Services = 4
+```
+
+The Services backend contained five records, with four active services and one inactive service.
+
+The Dashboard values matched the stored data.
+
+### Filtered Report
+
+The report was tested with:
+
+```text
+Module = Document
+Action = Create
+```
+
+The filtered summary and detailed report both returned one matching record.
+
+The exported CSV was also verified to contain the same filtered record.
+
+---
+
+## Empty and Edge States
+
+The following scenarios were manually tested:
+
+- KPI with zero matching records
+- No report results after filtering
+- Invalid date range
+- Date From only
+- Date To only
+- Result set large enough to demonstrate pagination
+- CSV export while filters are active
+
+### Zero-Value KPI
+
+The Draft Blog Posts KPI was temporarily tested with no matching draft records.
+
+The Dashboard correctly displayed:
+
+```text
+Draft Blog Posts = 0
+```
+
+without errors or layout problems.
+
+The original Blog Post status was restored after testing.
+
+### Invalid Date Range
+
+A Date From value later than Date To displays a clear validation message instead of returning misleading data.
+
+### One-Sided Date Filters
+
+Both Date From-only and Date To-only filtering were tested successfully.
+
+### Pagination
+
+The Audit Log dataset was increased beyond ten records for testing.
+
+With twelve Audit Log records, the report correctly displayed multiple pagination pages.
+
+---
+
+## Responsive and Usability Review
+
+The Administrative Dashboard and Reports page were tested at smaller browser widths.
+
+### Dashboard
+
+At mobile width:
+
+- KPI cards stack vertically.
+- KPI content remains readable.
+- Cards remain within the available page width.
+- The Dashboard remains usable without unnecessary visual complexity.
+
+### Reports
+
+At mobile width:
+
+- Report filters remain usable.
+- Filter fields stack appropriately.
+- Apply Filters and Reset remain accessible.
+- Summary cards stack vertically.
+- The Audit Activity Report remains readable.
+- The wide report table can be horizontally scrolled inside its container.
+- Export CSV remains accessible.
+
+---
+
+## End-to-End Verification
+
+The following scenarios were completed:
+
+1. Opened the Administrative Dashboard and verified KPI values.
+2. Opened the backend sections linked from both Recent Activity sections.
+3. Applied a date filter to the report.
+4. Applied additional Module and Action filters.
+5. Verified that report summary values updated according to the active filters.
+6. Verified that detailed report results matched the active filters.
+7. Exported a filtered report to CSV.
+8. Opened the exported CSV and verified its headings and contents.
+9. Tested a report filter combination that returned no records.
+10. Verified that a restricted backend user could not access the Dashboard or Reports through direct URLs.
+
+---
+
+## Files Added or Updated
+
+### Controllers
+
+```text
+plugins/training/services/controllers/Dashboard.php
+plugins/training/services/controllers/Reports.php
+```
+
+`Dashboard.php` handles KPI and recent activity data.
+
+`Reports.php` handles report filtering, summary calculations, pagination, date validation, and CSV export.
+
+### Backend Views
+
+```text
+plugins/training/services/controllers/dashboard/index.php
+plugins/training/services/controllers/reports/index.php
+```
+
+These views provide the Administrative Dashboard and Administrative Reports interfaces.
+
+### Plugin Configuration
+
+```text
+plugins/training/services/Plugin.php
+```
+
+Updated to register Dashboard and Reports permissions and backend navigation.
+
+### Backend Styles
+
+```text
+plugins/training/services/assets/css/backend.css
+```
+
+Contains the custom styling and responsive behavior used by the Dashboard, KPI cards, Recent Activity sections, report filters, summary cards, report table, and empty states.
+
+---
+
+## Backend URLs
+
+The pages use October CMS backend controller routing.
+
+### Administrative Dashboard
+
+```text
+/admin/training/services/dashboard
+```
+
+### Administrative Reports
+
+```text
+/admin/training/services/reports
+```
+
+### CSV Export
+
+```text
+/admin/training/services/reports/export
+```
+
+All protected backend pages remain subject to their configured permissions.
+
+---
+
+## Security
+
+The Dashboard, Reports page, and CSV export expose only the information required for administrative reporting.
+
+The implementation does not intentionally expose:
+
+- Passwords
+- API keys
+- Authentication tokens
+- Session information
+- Private environment values
+- Credentials
+
+The CSV export contains only the selected Audit Log reporting columns.
+
+Environment configuration and credentials must remain outside version control, and the `.env` file must not be committed to the public repository.
+
+---
+
+## Task 28 Testing Summary
+
+The completed Task 28 implementation includes:
+
+- Administrative Dashboard
+- Eight real-data KPI cards
+- Two Recent Activity sections
+- Administrative Reports page
+- Four server-side report filters
+- Dynamic filtered summary values
+- Detailed filtered report table
+- Pagination
+- Empty-result handling
+- Invalid date-range handling
+- One-sided date filters
+- Filter-aware CSV export
+- Dashboard and Reports permission control
+- Query and performance considerations
+- Manual data-accuracy verification
+- Empty and edge-state testing
+- Responsive Dashboard and Reports layouts
+- End-to-end verification

@@ -28,7 +28,20 @@ class Reports extends Controller
 
         $filters = $this->getFilters();
 
-        $query = $this->buildFilteredQuery($filters);
+        /*
+         * Validate the selected date range.
+         */
+        $dateRangeError = $this->getDateRangeError($filters);
+
+        $this->vars['dateRangeError'] = $dateRangeError;
+
+        /*
+         * Build the filtered database query.
+         */
+        $query = $this->buildFilteredQuery(
+            $filters,
+            $dateRangeError !== null
+        );
 
         /*
          * Summary values must reflect
@@ -87,6 +100,17 @@ class Reports extends Controller
     public function export()
     {
         $filters = $this->getFilters();
+
+        /*
+         * Do not export an invalid date range.
+         */
+        $dateRangeError = $this->getDateRangeError($filters);
+
+        if ($dateRangeError !== null) {
+            return redirect(
+                BackendMenu::url('training/services/reports')
+            );
+        }
 
         $query = $this->buildFilteredQuery($filters)
             ->orderBy('created_at', 'desc');
@@ -179,12 +203,38 @@ class Reports extends Controller
     }
 
     /*
+     * Validate Date From / Date To.
+     */
+    private function getDateRangeError(array $filters): ?string
+    {
+        if (
+            $filters['date_from'] !== ''
+            && $filters['date_to'] !== ''
+            && $filters['date_from'] > $filters['date_to']
+        ) {
+            return 'Invalid date range. Date From cannot be later than Date To.';
+        }
+
+        return null;
+    }
+
+    /*
      * Apply report filters directly
      * to the database query.
      */
-    private function buildFilteredQuery(array $filters)
-    {
+    private function buildFilteredQuery(
+        array $filters,
+        bool $invalidDateRange = false
+    ) {
         $query = AuditLog::query();
+
+        /*
+         * Invalid date range should return
+         * no report records.
+         */
+        if ($invalidDateRange) {
+            return $query->whereRaw('1 = 0');
+        }
 
         if ($filters['date_from'] !== '') {
             $query->whereDate(

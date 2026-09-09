@@ -5,6 +5,7 @@
 /** @var array $filters */
 /** @var \Illuminate\Support\Collection $modules */
 /** @var \Illuminate\Support\Collection $actions */
+/** @var string|null $dateRangeError */
 ?>
 
 <div class="layout">
@@ -160,6 +161,22 @@
                     </div>
 
                 </form>
+
+                <!-- INVALID DATE RANGE MESSAGE -->
+                <?php if (!empty($dateRangeError)): ?>
+
+                    <div
+                        class="alert alert-danger"
+                        style="margin: 0 22px 22px;">
+
+                        <i class="icon-warning"></i>
+
+                        <?= e($dateRangeError) ?>
+
+                    </div>
+
+                <?php endif ?>
+
             </div>
 
             <!-- SUMMARY CARDS -->
