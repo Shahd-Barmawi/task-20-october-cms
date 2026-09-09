@@ -28,7 +28,7 @@ This document records the findings identified during the final QA, security, per
 
 | 11 | The About link in the public navigation pointed to an incorrect destination and returned a Page Not Found error. | Public Website / Navigation | Medium | Fixed | Corrected the About page configuration and navigation link. Re-testing confirmed that `/about` now opens the intended About page successfully. |
 
-| 12 | The "View Services" button on the public Training page redirects users to `/services`, which returns a Page Not Found error. | Public Website / Training Navigation | Medium | Remaining | Update the button target so it points to the correct public services destination, then re-test the link. |
+| 12 | The "View Services" button on the public Training page redirected users to `/services`, which returned a Page Not Found error. | Public Website / Training Navigation | Medium | Fixed | Added a `services` anchor to the public services section and updated the Training page button URL to `/#services`. Re-testing confirmed that the button now opens the Home page directly at the Our Services section without a 404 error. |
 
 ## Regression Testing Checklist
 
@@ -273,6 +273,8 @@ Important High and Medium severity findings must be re-tested after fixing them 
 | 9 | Passed | The Documents navigation item was added and verified to open the public Document Library successfully. |
 
 | 11 | Passed | The About page configuration and navigation link were corrected. `/about` now opens the intended page without a 404 error. |
+
+| 12 | Passed | Re-tested the View Services button on the public Training page. It now navigates to `/#services` and opens the Our Services section successfully without a Page Not Found error. |
 
 ## Known Remaining Issues / Limitations
 
