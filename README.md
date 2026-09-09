@@ -4051,3 +4051,629 @@ The completed Task 28 implementation includes:
 - Empty and edge-state testing
 - Responsive Dashboard and Reports layouts
 - End-to-end verification
+
+# Task 29 - Final QA, Security Review & Production Readiness
+
+## Overview
+
+Task 29 focused on the final quality assurance, security review, regression testing, performance review, and production-readiness verification of the October CMS project.
+
+The objective was to verify that all previously implemented modules continued to work correctly together, identify remaining issues, fix and re-test discovered findings, review security and permissions, and prepare the project for final handover.
+
+---
+
+## Functional Regression Testing
+
+A complete regression review was performed across the main implemented modules.
+
+The following functionality was reviewed and tested:
+
+- Services management.
+- Service Categories management.
+- Contact Messages.
+- Dynamic Pages.
+- Blog Posts.
+- Blog Categories.
+- Documents.
+- Document Categories.
+- Audit Logs.
+- Dashboard.
+- Reports and CSV export.
+- Public website functionality.
+- Validation and error handling.
+- File upload and download behavior.
+
+CRUD operations, filtering, search, publication states, pagination, validation, and public visibility were re-tested where applicable.
+
+---
+
+## Authentication, Authorization & Permissions
+
+Backend permissions were re-tested using a non-superuser account.
+
+Restricted navigation and direct backend URL access were verified. Audit Logs, Dashboard, and Reports were specifically re-tested.
+
+Protected routes included:
+
+```text
+/admin/training/services/auditlogs
+/admin/training/services/dashboard
+/admin/training/services/reports
+```
+
+Users without the required permissions correctly received an Access Denied response.
+
+---
+
+## Input Validation & Error Handling
+
+Input validation and error-handling behavior were reviewed across the project.
+
+Testing included:
+
+- Required and missing fields.
+- Invalid form input.
+- Invalid email format.
+- Invalid report date ranges.
+- Unknown public URLs.
+- Unknown Dynamic Page slugs.
+- Draft content accessed through direct public URLs.
+- Missing document files.
+
+The public Contact form was strengthened with stricter server-side email validation. An invalid email such as `test@invalid` is now rejected with a clear validation message.
+
+Tested public failure states did not expose raw stack traces, SQL details, filesystem paths, or credentials.
+
+---
+
+## File Upload & Download Security
+
+Document upload and download behavior was reviewed.
+
+Testing included:
+
+- Valid PDF upload.
+- Invalid file-type rejection.
+- Public file download.
+- Draft/published document access.
+- Missing-file behavior.
+- File replacement.
+- Deleted document public removal.
+
+Missing files are handled safely using a `File unavailable` state.
+
+Test files were also reviewed to avoid including private or sensitive information.
+
+Manual verification of the configured maximum file-size restriction remains a final verification item.
+
+---
+
+## Sensitive Data & Repository Review
+
+The repository was reviewed for accidentally committed sensitive information.
+
+The following checks were completed:
+
+- `.env` is not tracked by Git.
+- `.env` is ignored by `.gitignore`.
+- `.env.example` does not contain real credentials.
+- Repository files were reviewed for obvious passwords, tokens, and API keys.
+- Test files were reviewed for private information.
+
+Real production credentials must remain outside version control and should be provided through environment-specific configuration.
+
+---
+
+## Public Website QA
+
+The public website was reviewed for functionality, navigation, publication behavior, responsiveness, and error handling.
+
+Testing included:
+
+- Home page.
+- About page.
+- Contact page.
+- Dynamic Pages.
+- Blog & News.
+- Document Library.
+- Public services.
+- Navigation links.
+- Draft/unpublished content.
+- Unknown URLs.
+- Mobile responsive behavior.
+
+Public navigation was improved during QA so important public functionality is discoverable without manually entering URLs.
+
+The final navigation provides access to:
+
+- Home.
+- About.
+- Training.
+- Career.
+- Blog & News.
+- Documents.
+- Contact.
+
+---
+
+## Backend QA
+
+Backend modules were reviewed for:
+
+- List views.
+- Forms.
+- Search.
+- Filters.
+- Create operations.
+- Update operations.
+- Delete operations.
+- Validation.
+- Navigation.
+- User feedback.
+- Permissions.
+
+A repeated search-field layout issue was identified in several backend modules where long placeholder text overlapped the search icon.
+
+Affected modules included:
+
+- Contact Messages.
+- Dynamic Pages.
+- Blog Categories.
+- Documents.
+- Document Categories.
+
+The affected search prompts were shortened to:
+
+```text
+Search...
+```
+
+All affected search fields were re-tested successfully.
+
+---
+
+## Data Integrity Testing
+
+Data-integrity behavior was reviewed to ensure related records and publication states remained consistent.
+
+Testing included:
+
+- Publication status lifecycle.
+- Category activation/deactivation.
+- Service/category relationships.
+- Document file replacement.
+- Document deletion and public removal.
+- Audit history after related record deletion.
+
+A Service Category was temporarily deactivated to verify that its related service relationship remained intact. The test state was restored after verification.
+
+---
+
+## Performance Review
+
+The project was reviewed for obvious performance issues.
+
+The review confirmed that:
+
+- Dashboard KPI values use database-level aggregate queries.
+- Recent Dashboard activity lists are limited to five records.
+- Report filters are applied directly to database queries.
+- Report results are paginated.
+- CSV export uses streaming with cursor-based processing.
+- The complete filtered export dataset is not loaded into memory at once.
+- Dashboard and Reports were reviewed for obvious N+1 query patterns.
+- Remaining project modules were reviewed for obvious performance concerns.
+
+No obvious critical performance issue was identified during the final review.
+
+---
+
+## Production Configuration Review
+
+Production-related configuration was reviewed before handover.
+
+The review covered:
+
+- Application environment.
+- Debug configuration.
+- Application URL.
+- Database configuration.
+- Mail configuration.
+- Storage configuration.
+- Cache configuration.
+- Queue requirements.
+- Scheduled-job requirements.
+- Production cache/build considerations.
+- Environment-specific credentials.
+
+Production credentials must be provided through environment variables and must not be committed to the repository.
+
+---
+
+## Error & Not-Found Handling
+
+Public error and not-found behavior was reviewed.
+
+Testing included:
+
+- Unknown public URLs.
+- Unknown Dynamic Page slugs.
+- Draft Dynamic Page direct access.
+- Missing document files.
+
+The public website provides a usable failure state without exposing internal application details.
+
+During tested failure scenarios, no raw stack trace, SQL information, filesystem path, or credentials were exposed.
+
+---
+
+## QA Findings & Fixes
+
+A total of **12 QA findings** were recorded during Task 29.
+
+| #   | Finding                                                                          | Severity | Status            |
+| --- | -------------------------------------------------------------------------------- | -------- | ----------------- |
+| 1   | Service Category deletion did not redirect back to the list.                     | Low      | Fixed & Re-Tested |
+| 2   | Contact Messages search placeholder overlapped the search icon.                  | Low      | Fixed & Re-Tested |
+| 3   | Contact form accepted an invalid email format such as `test@invalid`.            | Medium   | Fixed & Re-Tested |
+| 4   | Dynamic Pages search placeholder overlapped the search icon.                     | Low      | Fixed & Re-Tested |
+| 5   | Published Dynamic Pages lacked clear public navigation.                          | Medium   | Fixed & Re-Tested |
+| 6   | Blog & News was missing from the main public navigation.                         | Medium   | Fixed & Re-Tested |
+| 7   | Blog Categories search placeholder overlapped the search icon.                   | Low      | Fixed & Re-Tested |
+| 8   | Documents search placeholder overlapped the search icon.                         | Low      | Fixed & Re-Tested |
+| 9   | Document Library was missing from the main public navigation.                    | Medium   | Fixed & Re-Tested |
+| 10  | Document Categories search placeholder overlapped the search icon.               | Low      | Fixed & Re-Tested |
+| 11  | About navigation link returned a Page Not Found error.                           | Medium   | Fixed & Re-Tested |
+| 12  | View Services button pointed to `/services` and returned a Page Not Found error. | Medium   | Fixed & Re-Tested |
+
+### Fix Details
+
+The Service Category delete behavior was updated so that after successful deletion the backend returns the user to the Service Categories list.
+
+Server-side Contact form email validation was strengthened so invalid values such as `test@invalid` are rejected.
+
+Backend search prompts in the affected modules were shortened to `Search...`, preventing the placeholder text from overlapping the search icon.
+
+Public navigation was updated to provide discoverable access to Dynamic Pages, Blog & News, and the Document Library.
+
+The About page configuration and navigation link were corrected so `/about` opens the intended page.
+
+The Training page View Services button was updated from `/services` to `/#services`, and a `services` anchor was added to the public services section.
+
+All 12 recorded findings were re-tested successfully after their fixes.
+
+### QA Findings Summary
+
+| Severity  | Findings | Final Status             |
+| --------- | -------: | ------------------------ |
+| High      |        0 | None                     |
+| Medium    |        6 | All Fixed & Re-Tested    |
+| Low       |        6 | All Fixed & Re-Tested    |
+| **Total** |   **12** | **12 Fixed & Re-Tested** |
+
+No unresolved High or Medium severity findings remain in the recorded Task 29 QA findings.
+
+---
+
+## Local Setup
+
+1. Clone the repository:
+
+```bash
+git clone <repository-url>
+```
+
+2. Enter the project directory:
+
+```bash
+cd <project-directory>
+```
+
+3. Install PHP dependencies:
+
+```bash
+composer install
+```
+
+4. Create the local `.env` file using `.env.example`:
+
+```bash
+cp .env.example .env
+```
+
+On Windows, `.env.example` can also be copied manually and renamed to `.env`.
+
+5. Configure the required local environment values.
+
+6. Generate an application key if required:
+
+```bash
+php artisan key:generate
+```
+
+7. Configure the local database.
+
+8. Apply the required October CMS migrations and plugin updates:
+
+```bash
+php artisan october:migrate
+```
+
+9. Start the local application using the configured development environment.
+
+For example:
+
+```bash
+php artisan serve
+```
+
+---
+
+## Database Migration / Update
+
+After cloning the repository or pulling changes that contain database migrations, apply the October CMS migration/update process:
+
+```bash
+php artisan october:migrate
+```
+
+A database backup should be created before applying schema changes in a production environment.
+
+---
+
+## Required Environment Variables
+
+Environment-specific values must be configured through `.env`.
+
+The main environment-variable names include:
+
+```text
+APP_NAME
+APP_ENV
+APP_KEY
+APP_DEBUG
+APP_URL
+
+DB_CONNECTION
+DB_HOST
+DB_PORT
+DB_DATABASE
+DB_USERNAME
+DB_PASSWORD
+
+CACHE_STORE
+SESSION_DRIVER
+QUEUE_CONNECTION
+
+MAIL_MAILER
+MAIL_HOST
+MAIL_PORT
+MAIL_USERNAME
+MAIL_PASSWORD
+MAIL_ENCRYPTION
+MAIL_FROM_ADDRESS
+MAIL_FROM_NAME
+
+FILESYSTEM_DISK
+
+AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY
+AWS_DEFAULT_REGION
+AWS_BUCKET
+AWS_USE_PATH_STYLE_ENDPOINT
+```
+
+Only environment-variable names are documented. Real passwords, keys, tokens, and production credentials must not be committed to the repository.
+
+`.env.example` is provided as a safe configuration reference, while `.env` remains outside version control.
+
+---
+
+## Backend Access & Permission Structure
+
+Backend functionality is protected using October CMS backend authentication and module-specific permissions.
+
+Protected functionality includes:
+
+- Services.
+- Service Categories.
+- Contact Messages.
+- Dynamic Pages.
+- Blog Posts.
+- Blog Categories.
+- Documents.
+- Document Categories.
+- Audit Logs.
+- Dashboard.
+- Reports.
+
+Permission protection applies to both backend navigation and direct URL access.
+
+Restricted Audit Logs, Dashboard, and Reports routes were specifically re-tested using a non-superuser account and correctly returned Access Denied.
+
+The local backend prefix used during testing was `/admin`.
+
+---
+
+## Main Public Routes & Features
+
+### Home
+
+```text
+/
+```
+
+Provides the Home page and public service content.
+
+### About
+
+```text
+/about
+```
+
+Provides the public About page.
+
+### Dynamic Pages
+
+```text
+/pages/{slug}
+```
+
+Published Dynamic Pages are available through their slug.
+
+Examples:
+
+```text
+/pages/about-training
+/pages/career-development
+```
+
+### Blog & News
+
+```text
+/blog
+```
+
+Provides public Blog & News content, category filtering, and pagination.
+
+### Document Library
+
+```text
+/documents
+```
+
+Provides published public documents and document downloads.
+
+### Contact
+
+```text
+/contact
+```
+
+Provides the public Contact form with server-side validation.
+
+Draft or unpublished content is not intended to be publicly accessible.
+
+Unknown or unavailable content is handled using a safe not-found state.
+
+---
+
+## File & Storage Considerations
+
+The Document Library supports uploaded document files.
+
+Important considerations include:
+
+- Valid PDF uploads were tested.
+- Invalid file types are rejected.
+- Public file downloads were tested.
+- Draft/published access behavior was verified.
+- Missing files are handled safely.
+- File replacement behavior was tested.
+- Deleted documents are removed from public access.
+- Test files should not contain sensitive information.
+- Production filesystem permissions must be configured correctly.
+- Remote storage credentials must remain environment-specific.
+
+Manual verification of the configured maximum file-size restriction remains a final verification item.
+
+---
+
+## Testing Notes
+
+Task 29 included final regression and QA testing across the project.
+
+Testing covered:
+
+- CRUD functionality.
+- Required-field validation.
+- Server-side email validation.
+- Search.
+- Filters.
+- Pagination.
+- Draft/published states.
+- Future Blog publication behavior.
+- File upload and download.
+- Invalid file uploads.
+- Missing-file behavior.
+- Permissions and authorization.
+- Direct backend URL restrictions.
+- Audit logging.
+- Dashboard KPI accuracy.
+- Reports and CSV export.
+- Invalid report date ranges.
+- Empty report results.
+- Public navigation.
+- Mobile responsive behavior.
+- Error and not-found handling.
+- Data integrity.
+- Repository security.
+- Performance.
+- Production configuration.
+
+A total of **12 QA findings** were identified, fixed, and re-tested.
+
+---
+
+## Known Remaining Limitations
+
+All 12 recorded Task 29 QA findings were fixed and re-tested successfully.
+
+No unresolved High or Medium severity findings remain.
+
+The following final verification limitations are documented:
+
+- The configured maximum file-size restriction has not been manually verified.
+- Exported report data requires a final sensitivity/privacy review before use with real production data.
+- A fully exhaustive missing-image/file review across every public page has not been completed.
+- Empty/no-results states across every public module have not been exhaustively reviewed.
+- Desktop responsive behavior across every public page has not been exhaustively reviewed.
+
+These are documented handover limitations rather than unresolved findings from the QA Findings Log.
+
+---
+
+## Production Readiness Notes
+
+Before production deployment:
+
+1. Configure the correct production environment.
+2. Disable public debug output.
+3. Configure the production application URL.
+4. Configure database credentials through environment variables.
+5. Configure production mail settings if required.
+6. Configure production storage and filesystem permissions.
+7. Configure the required cache, session, and queue drivers.
+8. Apply all required database migrations.
+9. Prepare production assets and caches as required.
+10. Verify file-size restrictions and storage limits.
+11. Review exported data for sensitive information.
+12. Perform a final smoke test after deployment.
+13. Back up the production database before schema updates.
+14. Keep all production credentials outside version control.
+
+---
+
+## Task 29 Final Status
+
+- [x] Functional Regression Testing completed.
+- [x] Authentication, Authorization & Permissions reviewed.
+- [x] Input Validation & Error Handling reviewed.
+- [x] File Upload & Download Security reviewed.
+- [x] Sensitive Data & Repository Review completed.
+- [x] Public Website QA completed.
+- [x] Backend QA completed.
+- [x] Data Integrity Testing completed.
+- [x] Performance Review completed.
+- [x] Production Configuration Review completed.
+- [x] Error / Not-Found Pages reviewed.
+- [x] QA Findings Log completed.
+- [x] Fix & Re-Test completed.
+- [x] Final README Preparation completed.
+
+**QA findings recorded:** 12  
+**QA findings fixed and re-tested:** 12  
+**Unresolved High severity findings:** 0  
+**Unresolved Medium severity findings:** 0
+
+Task 29 final QA and README documentation are complete. Final verification and handover preparation follow in the remaining steps.

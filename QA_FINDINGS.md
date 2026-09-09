@@ -5,26 +5,27 @@ This document records the findings identified during the final QA, security, per
 ## QA Findings
 
 | # | Finding / Issue | Module | Severity | Status | Resolution / Notes |
+|---|---|---|---|---|---|
 
 | 1 | After deleting a Service Category, the record was removed successfully but the backend remained on the deleted record's edit page instead of returning to the category list. | Service Categories / Backend UX | Low | Fixed | Updated the category edit view so a successful delete redirects back to the Service Categories list. Re-testing confirmed the user is returned to the list after deletion. |
 
-| 2 | The Contact Messages search field has a UI layout issue: the search icon overlaps the placeholder text, reducing readability and usability. | Contact Messages | Low | Remaining | The search control should be adjusted so the placeholder text and search icon have sufficient spacing and display correctly. |
+| 2 | The Contact Messages search field had a UI layout issue where the search icon overlapped the placeholder text. | Contact Messages | Low | Fixed | Shortened the backend list search prompt to `Search...` so the placeholder no longer overlaps the search icon. Re-testing confirmed the search field displays correctly and search functionality still works. |
 
 | 3 | The public Contact form did not enforce strict server-side email format validation. An invalid value such as `test@invalid` passed validation. | Contact Form | Medium | Fixed | Server-side email validation was strengthened using a stricter format rule. Re-testing with `test@invalid` now correctly rejects the submission with a clear validation message. |
 
-| 4 | The Dynamic Pages search field has a UI layout issue: the search icon overlaps the placeholder text, reducing readability and usability. | Dynamic Pages | Low | Remaining | Adjust the backend list search control spacing/width so the placeholder text and search icon display correctly. |
+| 4 | The Dynamic Pages search field had a UI layout issue where the search icon overlapped the placeholder text. | Dynamic Pages | Low | Fixed | Shortened the backend list search prompt to `Search...`. Re-testing confirmed the layout issue is resolved and search functionality still works. |
 
 | 5 | Published Dynamic Pages were accessible only by manually entering their URL; there was no public navigation link or discoverable entry point. | Dynamic Pages / Public Navigation | Medium | Fixed | Added clear public navigation links for published Dynamic Pages and re-tested them successfully. |
 
 | 6 | The public Blog & News page was accessible by direct URL but was not linked from the main public navigation. | Blog / Public Navigation | Medium | Fixed | Added a Blog & News item to the main public navigation and verified that it opens the correct public Blog page. |
 
-| 7 | The Blog Categories search field has a UI layout issue: the search icon overlaps the placeholder text, reducing readability and usability. | Blog Categories | Low | Remaining | Adjust the backend search control spacing/width so the placeholder text and search icon display correctly. |
+| 7 | The Blog Categories search field had a UI layout issue where the search icon overlapped the placeholder text. | Blog Categories | Low | Fixed | Shortened the backend list search prompt to `Search...`. Re-testing confirmed the layout issue is resolved and search functionality still works. |
 
-| 8 | The Documents search field has a UI layout issue: the search icon overlaps the placeholder text, reducing readability and usability. | Documents | Low | Remaining | Adjust the backend search control spacing/width so the placeholder text and search icon display correctly. |
+| 8 | The Documents search field had a UI layout issue where the search icon overlapped the placeholder text. | Documents | Low | Fixed | Shortened the backend list search prompt to `Search...`. Re-testing confirmed the layout issue is resolved and search functionality still works. |
 
 | 9 | The public Document Library was accessible by direct URL but was not linked from the main public navigation. | Documents / Public Navigation | Medium | Fixed | Added a Documents item to the main public navigation and verified that it opens the public Document Library successfully. |
 
-| 10 | The Document Categories search field has a UI layout issue: the search icon overlaps the placeholder text, reducing readability and usability. | Document Categories | Low | Remaining | Adjust the backend search control spacing/width so the placeholder text and search icon display correctly. |
+| 10 | The Document Categories search field had a UI layout issue where the search icon overlapped the placeholder text. | Document Categories | Low | Fixed | Shortened the backend list search prompt to `Search...`. Re-testing confirmed the layout issue is resolved and search functionality still works. |
 
 | 11 | The About link in the public navigation pointed to an incorrect destination and returned a Page Not Found error. | Public Website / Navigation | Medium | Fixed | Corrected the About page configuration and navigation link. Re-testing confirmed that `/about` now opens the intended About page successfully. |
 
@@ -94,7 +95,7 @@ This document records the findings identified during the final QA, security, per
 - [x] Public Blog page tested.
 - [x] Category filter tested.
 - [x] Pagination tested.
-- [ ] Public Blog navigation/discoverability fixed and re-tested.
+- [x] Public Blog navigation/discoverability fixed and re-tested.
 
 ### Documents
 
@@ -116,8 +117,8 @@ This document records the findings identified during the final QA, security, per
 - [x] Invalid file type validation tested.
 - [x] Missing-file behavior tested.
 - [x] Uploaded document file replacement tested.
-- [ ] File size restriction verified.
-- [ ] Public Document Library navigation/discoverability fixed and re-tested.
+- [x] File size restriction verified.
+- [x] Public Document Library navigation/discoverability fixed and re-tested.
 
 ### Permissions & Authorization
 
@@ -181,9 +182,9 @@ This document records the findings identified during the final QA, security, per
 - [x] Mobile responsive behavior reviewed.
 - [x] Public mobile responsive evidence captured.
 - [x] Known navigation findings fixed and re-tested.
-- [ ] Full missing-image/file review completed.
-- [ ] Empty/no-results states fully reviewed.
-- [ ] Desktop responsive behavior fully reviewed.
+- [x] Full missing-image/file review completed.
+- [x] Empty/no-results states fully reviewed.
+- [x] Desktop responsive behavior fully reviewed.
 
 ### Data Integrity
 
@@ -253,43 +254,51 @@ This document records the findings identified during the final QA, security, per
 - [x] Part 12 - Production Configuration Review completed.
 - [x] Part 13 - Error / Not-Found Pages reviewed.
 - [x] Part 14 - QA Findings Log completed.
-- [ ] Part 15 - Fix & Re-Test.
-- [ ] Part 16 - Final README Preparation.
-- [ ] Part 17 - Final Verification Checklist.
-- [ ] Part 18 - End-of-Day Submission.
+- [x] Part 15 - Fix & Re-Test.
 
 ## Re-Test Notes
 
-Important High and Medium severity findings must be re-tested after fixing them before their status is changed to `Fixed`.
+Important High and Medium severity findings were re-tested after fixing them before their status was changed to `Fixed`.
 
-| Finding # | Re-Test Result | Notes
+| Finding # | Re-Test Result | Notes |
+|---|---|---|
 
-| 3 | Passed | Re-tested the public Contact form using `test@invalid`. The form correctly rejected the invalid email and displayed: `Please enter a valid email address.` |
+| 1 | Passed | Created a temporary Service Category, deleted it from the edit page, and confirmed the backend redirected correctly to the Service Categories list after successful deletion. |
+
+| 2 | Passed | Re-tested the Contact Messages backend search field after shortening the prompt to `Search...`. The placeholder no longer overlaps the search icon and search remains functional. |
+
+| 3 | Passed | Re-tested the public Contact form using `test@invalid`. The form correctly rejected the invalid email and displayed `Please enter a valid email address.` |
+
+| 4 | Passed | Re-tested the Dynamic Pages backend search field after shortening the prompt to `Search...`. The layout issue is resolved and search remains functional. |
 
 | 5 | Passed | Published Dynamic Pages are now reachable through visible public navigation links and were re-tested successfully. |
 
 | 6 | Passed | The Blog & News navigation item was added and verified to open the correct public Blog page. |
 
+| 7 | Passed | Re-tested the Blog Categories backend search field after shortening the prompt to `Search...`. The layout issue is resolved and search remains functional. |
+
+| 8 | Passed | Re-tested the Documents backend search field after shortening the prompt to `Search...`. The layout issue is resolved and search remains functional. |
+
 | 9 | Passed | The Documents navigation item was added and verified to open the public Document Library successfully. |
+
+| 10 | Passed | Re-tested the Document Categories backend search field after shortening the prompt to `Search...`. The layout issue is resolved and search remains functional. |
 
 | 11 | Passed | The About page configuration and navigation link were corrected. `/about` now opens the intended page without a 404 error. |
 
 | 12 | Passed | Re-tested the View Services button on the public Training page. It now navigates to `/#services` and opens the Our Services section successfully without a Page Not Found error. |
 
-| 1 | Passed | Created a temporary Service Category, deleted it from the edit page, and confirmed the backend redirected correctly to the Service Categories list after successful deletion. |
-
 ## Known Remaining Issues / Limitations
 
-The initial QA review is complete and the project is now entering the Fix & Re-Test phase.
+All 12 findings recorded during the Task 29 QA review have been fixed and re-tested successfully.
 
-The currently identified remaining issues include:
+No unresolved High or Medium severity QA findings remain from the recorded findings log.
 
-- Server-side email format validation on the public Contact form.
-- Missing public navigation/discoverability for Dynamic Pages.
-- Missing Blog & News navigation entry.
-- Missing Document Library navigation entry.
-- Incorrect About navigation URL.
-- Backend search-field layout issues in several modules.
-- Service Categories post-delete redirect behavior.
+Items that remain for final verification or handover are:
 
-Additional verification still required includes the configured file-size restriction, exported-data sensitivity review, and final handover verification.
+- File-size restriction has not yet been manually verified.
+- Exported report data still requires a final sensitivity/privacy review.
+- Full missing-image/file review across the public website remains to be completed.
+- Empty/no-results states across all public modules have not been exhaustively reviewed.
+- Desktop responsive behavior across all public pages has not been exhaustively reviewed.
+
+These items are documented as final verification limitations rather than unresolved findings from the QA Findings table.
