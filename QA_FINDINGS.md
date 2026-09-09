@@ -6,7 +6,7 @@ This document records the findings identified during the final QA, security, per
 
 | # | Finding / Issue | Module | Severity | Status | Resolution / Notes |
 
-| 1 | After deleting a service category, the backend remains on the edit page of the deleted record instead of redirecting to the categories list. | Service Categories | Low | Remaining | The category is deleted successfully, but the user must manually return to the categories list. The post-delete redirect should be corrected. |
+| 1 | After deleting a Service Category, the record was removed successfully but the backend remained on the deleted record's edit page instead of returning to the category list. | Service Categories / Backend UX | Low | Fixed | Updated the category edit view so a successful delete redirects back to the Service Categories list. Re-testing confirmed the user is returned to the list after deletion. |
 
 | 2 | The Contact Messages search field has a UI layout issue: the search icon overlaps the placeholder text, reducing readability and usability. | Contact Messages | Low | Remaining | The search control should be adjusted so the placeholder text and search icon have sufficient spacing and display correctly. |
 
@@ -275,6 +275,8 @@ Important High and Medium severity findings must be re-tested after fixing them 
 | 11 | Passed | The About page configuration and navigation link were corrected. `/about` now opens the intended page without a 404 error. |
 
 | 12 | Passed | Re-tested the View Services button on the public Training page. It now navigates to `/#services` and opens the Our Services section successfully without a Page Not Found error. |
+
+| 1 | Passed | Created a temporary Service Category, deleted it from the edit page, and confirmed the backend redirected correctly to the Service Categories list after successful deletion. |
 
 ## Known Remaining Issues / Limitations
 
