@@ -10,7 +10,7 @@ This document records the findings identified during the final QA, security, per
 
 | 2 | The Contact Messages search field has a UI layout issue: the search icon overlaps the placeholder text, reducing readability and usability. | Contact Messages | Low | Remaining | The search control should be adjusted so the placeholder text and search icon have sufficient spacing and display correctly. |
 
-| 3 | The public Contact form does not enforce server-side email format validation. An invalid value such as `test@invalid` passes the application validation and processing continues to the next required field. | Contact Form | Medium | Remaining | Add server-side email validation so invalid email formats are rejected independently of browser-side HTML validation. |
+| 3 | The public Contact form did not enforce strict server-side email format validation. An invalid value such as `test@invalid` passed validation. | Contact Form | Medium | Fixed | Server-side email validation was strengthened using a stricter format rule. Re-testing with `test@invalid` now correctly rejects the submission with a clear validation message. |
 
 | 4 | The Dynamic Pages search field has a UI layout issue: the search icon overlaps the placeholder text, reducing readability and usability. | Dynamic Pages | Low | Remaining | Adjust the backend list search control spacing/width so the placeholder text and search icon display correctly. |
 
@@ -61,7 +61,7 @@ This document records the findings identified during the final QA, security, per
 - [x] Required-field error feedback tested.
 - [x] Successful public submission verified in backend.
 - [x] Test message deletion tested.
-- [ ] Server-side email format validation verified.
+- [x] Server-side email format validation verified.
 
 ### Dynamic Pages
 
@@ -260,9 +260,9 @@ This document records the findings identified during the final QA, security, per
 
 Important High and Medium severity findings must be re-tested after fixing them before their status is changed to `Fixed`.
 
-| Finding # | Re-Test Result | Notes                                      |
-| --------- | -------------- | ------------------------------------------ |
-| -         | -              | Fix and re-test phase has not started yet. |
+| Finding # | Re-Test Result | Notes
+
+| 3 | Passed | Re-tested the public Contact form using `test@invalid`. The form correctly rejected the invalid email and displayed: `Please enter a valid email address.` |
 
 ## Known Remaining Issues / Limitations
 

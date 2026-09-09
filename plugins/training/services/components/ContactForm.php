@@ -1,4 +1,6 @@
-<?php namespace Training\Services\Components;
+<?php
+
+namespace Training\Services\Components;
 
 use Cms\Classes\ComponentBase;
 use Training\Services\Models\ContactMessage;
@@ -34,7 +36,7 @@ class ContactForm extends ComponentBase
         if ($honeypot !== '') {
             return [
                 '#contact-form-result' =>
-                    '<div class="contact-success-message">
+                '<div class="contact-success-message">
                         Thank you! Your message has been sent successfully.
                     </div>'
             ];
@@ -42,13 +44,21 @@ class ContactForm extends ComponentBase
 
         $validator = Validator::make($data, [
             'name' => 'required|max:255',
-            'email' => 'required|email|max:255',
+
+            'email' => [
+                'required',
+                'max:255',
+                'regex:/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/'
+            ],
+
             'subject' => 'required|max:255',
             'message' => 'required|max:5000',
         ], [
             'name.required' => 'Please enter your name.',
+
             'email.required' => 'Please enter your email address.',
-            'email.email' => 'Please enter a valid email address.',
+            'email.regex' => 'Please enter a valid email address.',
+
             'subject.required' => 'Please enter a subject.',
             'message.required' => 'Please enter your message.',
         ]);
@@ -67,7 +77,7 @@ class ContactForm extends ComponentBase
 
         return [
             '#contact-form-result' =>
-                '<div class="contact-success-message">
+            '<div class="contact-success-message">
                     Thank you! Your message has been sent successfully.
                 </div>'
         ];
