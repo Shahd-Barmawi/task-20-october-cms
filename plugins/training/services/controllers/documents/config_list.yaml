@@ -8,7 +8,7 @@ recordUrl: training/services/documents/update/:id
 toolbar:
     buttons: list_toolbar
     search:
-        prompt: Search documents...
+        prompt: Search...
 
 filter: config_filter.yaml
 

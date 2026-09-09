@@ -714,3 +714,13 @@
         flex-wrap: wrap;
     }
 }
+
+/* Task 29 - Backend List Search Fix */
+
+.control-list .control-toolbar .toolbar-item:has(.search-input-container) {
+    width: 260px !important;
+}
+
+.control-list .search-input-container {
+    width: 100%;
+}

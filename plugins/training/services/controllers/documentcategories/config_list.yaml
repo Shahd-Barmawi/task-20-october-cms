@@ -8,7 +8,7 @@ recordUrl: training/services/documentcategories/update/:id
 toolbar:
     buttons: list_toolbar
     search:
-        prompt: Search document categories...
+        prompt: Search...
 
 recordsPerPage: 20
 
