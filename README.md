@@ -833,13 +833,15 @@ These items are optional enhancements and are separate from known bugs or requir
 
 ## Training Reflection
 
-During this training, I gained practical experience with both full-stack development concepts and CMS-based application development. The October CMS phase helped me understand how a real content-management system connects backend models, database migrations, permissions, reusable components, file attachments, theme templates, and public pages. I also practiced PHP, Laravel-style development, Twig, YAML configuration, MySQL, AJAX requests, validation, responsive CSS, Git, and GitHub.
+During this training, I gained practical experience in full-stack development and learned how the different parts of a real web application work together. Working with October CMS helped me improve my understanding of PHP, backend development, databases, frontend development, and content management systems.
 
-One of the main technical challenges was extending the same project through many connected modules without breaking previously implemented functionality. Another challenge was handling permissions, publication rules, file access, and validation consistently between the backend and public website. I approached these issues by testing each flow after implementation, checking edge cases, and using the final QA phase to identify and re-test problems.
+Throughout the project, I worked on several features, including services, contact messages, dynamic pages, blog and news content, a document library, user roles and permissions, audit logs, an administrative dashboard, reports, and CSV export. I also gained more experience with validation, file handling, responsive design, Git, GitHub, and testing.
 
-The area in which I improved the most was understanding how frontend, backend, database, security, and content management work together as one system instead of as separate parts.
+One of the biggest challenges was continuing to add new features to the same project while making sure that the previous functionality still worked correctly. This taught me the importance of regression testing, debugging, security checks, and organizing code in a maintainable way.
 
-After the training, I would like to continue improving my backend development skills, especially application architecture, automated testing, API design, security, and production deployment.
+The training also helped me understand the connection between the frontend, backend, database, permissions, and security instead of looking at each part separately.
+
+After completing this training, I would like to continue improving my backend and full-stack development skills, especially in API development, application architecture, automated testing, security, and deployment.
 
 ---
 
